@@ -1,2383 +1,958 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>个人网站 | Kyoko的作品集</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1"/>
+        <title>Kyoko的作品集 | 个人网站</title>
+        <style>
+            html {
+                background: var(--bg-color, #fff);
+                scroll-behavior: smooth; /* 平滑滚动效果 */
+            }
+
+            html[data-theme="dark"] {
+                background: var(--bg-color, #22272e);
+            }
+
+            body {
+                background: var(--bg-color);
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                line-height: 1.6;
+                color: #2c3e50;
+                margin: 0;
+                padding: 0;
+            }
+
+            .container {
+                max-width: 1400px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+
+            /* 头部样式 */
+            header {
+                text-align: center;
+                padding: 60px 20px;
+                background: linear-gradient(135deg, #ff9a9e 0%, #a8c8ec 100%);
+                color: white;
+                border-radius: 15px;
+                margin-bottom: 40px;
+                box-shadow: 0 10px 30px rgba(255, 154, 158, 0.3);
+            }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #ff9a9e 0%, #a8c8ec 100%);
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 3rem;
-            color: white;
-        }
-
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .project-card {
-            background: white;
-            border-radius: 15px;
-            padding: 0;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .project-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 15px 15px 0 0;
-        }
-
-        .project-content {
-            padding: 2rem;
-        }
-
-        .expandable-project {
-            position: relative;
-        }
-
-        .expand-btn {
-            background: none;
-            border: none;
-            color: #ff9a9e;
-            font-size: 1.2rem;
-            cursor: pointer;
-            float: right;
-            transition: transform 0.3s ease;
-            margin-top: -0.5rem;
-        }
-
-        .expand-btn:hover {
-            transform: scale(1.1);
-        }
-
-        .expand-btn.expanded {
-            transform: rotate(180deg);
-        }
-
-        .subdirectory {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-            margin-top: 1rem;
-            border-top: 1px solid #e9ecef;
-            padding-top: 0;
-        }
-
-        .subdirectory.expanded {
-            max-height: 800px;
-            padding-top: 1rem;
-        }
-
-        /* 新的目录结构样式 */
-        .catalog-container {
-            padding: 1rem;
-            background: #f8f9fa;
-            border-radius: 10px;
-        }
-
-        .catalog-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 1rem;
-            text-align: center;
-            border-bottom: 2px solid #e9ecef;
-            padding-bottom: 0.5rem;
-        }
-
-        .catalog-section {
-            margin-bottom: 1rem;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .catalog-section-title {
-            background: linear-gradient(45deg, #ff9a9e, #a8c8ec);
-            color: white;
-            padding: 0.75rem 1rem;
-            margin: 0;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
-        }
-
-        .catalog-section-title:hover {
-            background: linear-gradient(45deg, #ff8a8e, #98b8dc);
-        }
-
-        .catalog-icon {
-            margin-right: 0.5rem;
-        }
-
-        .catalog-toggle {
-            font-size: 0.8rem;
-            transition: transform 0.3s ease;
-        }
-
-        .catalog-section-title.expanded .catalog-toggle {
-            transform: rotate(90deg);
-        }
-
-        .catalog-subsection {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-            background: white;
-        }
-
-        .catalog-subsection.expanded {
-            max-height: 600px;
-        }
-
-        .catalog-item {
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .catalog-item:last-child {
-            border-bottom: none;
-        }
-
-        .catalog-sub-title {
-            padding: 0.75rem 1rem;
-            margin: 0;
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: #495057;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            background: #f8f9fa;
-            transition: all 0.3s ease;
-        }
-
-        .catalog-sub-title:hover {
-            background: #e9ecef;
-            color: #ff9a9e;
-        }
-
-        .catalog-marker {
-            margin-right: 0.5rem;
-            font-size: 0.8rem;
-            transition: transform 0.3s ease;
-        }
-
-        .catalog-sub-title.expanded .catalog-marker {
-            transform: rotate(90deg);
-        }
-
-        .catalog-list {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            background: white;
-        }
-
-        .catalog-list.expanded {
-            max-height: 300px;
-        }
-
-        .catalog-list li {
-            border-bottom: 1px solid #f8f9fa;
-            padding: 0;
-        }
-
-        .catalog-list li:last-child {
-            border-bottom: none;
-        }
-
-        .catalog-link {
-            display: block;
-            padding: 0.5rem 2rem;
-            color: #666;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-            position: relative;
-        }
-
-        .catalog-link:hover {
-            background: linear-gradient(45deg, rgba(255, 154, 158, 0.1), rgba(168, 200, 236, 0.1));
-            color: #ff9a9e;
-            padding-left: 2.5rem;
-        }
-
-        .catalog-link:before {
-            content: '▸';
-            position: absolute;
-            left: 1.5rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .catalog-link:hover:before {
-            opacity: 1;
-        }
-
-        /* 分类管理样式 */
-        .categories-section {
-            background: white;
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            margin-bottom: 3rem;
-        }
-
-        .categories-title {
-            text-align: center;
-            font-size: 2rem;
-            margin-bottom: 2rem;
-            color: #2c3e50;
-        }
-
-        .category-filter {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            padding: 1rem;
-            background: #f8f9fa;
-            border-radius: 10px;
-        }
-
-        .category-btn {
-            padding: 0.5rem 1rem;
-            border: 2px solid #e9ecef;
-            border-radius: 25px;
-            background: white;
-            color: #495057;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .category-btn:hover {
-            border-color: #ff9a9e;
-            color: #ff9a9e;
-            transform: translateY(-2px);
-        }
-
-        .category-btn.active {
-            background: linear-gradient(45deg, #ff9a9e, #a8c8ec);
-            color: white;
-            border-color: transparent;
-        }
-
-        .category-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .category-item {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .category-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            border-color: #ff9a9e;
-        }
-
-        .category-item.hidden {
-            display: none;
-        }
-
-        .category-item-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .category-icon {
-            font-size: 1.5rem;
-            margin-right: 0.5rem;
-        }
-
-        .category-item-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #2c3e50;
-            margin: 0;
-        }
-
-        .category-item-count {
-            background: linear-gradient(45deg, #ff9a9e, #a8c8ec);
-            color: white;
-            padding: 0.2rem 0.6rem;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            margin-left: auto;
-        }
-
-        .category-item-description {
-            color: #666;
-            margin-bottom: 1rem;
-            line-height: 1.6;
-        }
-
-        .category-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .category-tag {
-            background: white;
-            color: #495057;
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            border: 1px solid #e9ecef;
-        }
-
-        /* 内容编写区域 */
-        .content-editor {
-            background: white;
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            margin-bottom: 3rem;
-        }
-
-        .editor-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #e9ecef;
-        }
-
-        .editor-title {
-            font-size: 1.5rem;
-            color: #2c3e50;
-            margin: 0;
-        }
-
-        .add-content-btn {
-            background: linear-gradient(45deg, #ff9a9e, #a8c8ec);
-            color: white;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .add-content-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 154, 158, 0.4);
-        }
-
-        .content-form {
-            display: none;
-            background: #f8f9fa;
-            padding: 1.5rem;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-        }
-
-        .content-form.active {
-            display: block;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: #2c3e50;
-        }
-
-        .form-input,
-        .form-select,
-        .form-textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-input:focus,
-        .form-select:focus,
-        .form-textarea:focus {
-            outline: none;
-            border-color: #ff9a9e;
-        }
-
-        .form-textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-        }
-
-        .btn-save,
-        .btn-cancel {
-            padding: 0.6rem 1.2rem;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .btn-save {
-            background: linear-gradient(45deg, #28a745, #20c997);
-            color: white;
-        }
-
-        .btn-cancel {
-            background: #6c757d;
-            color: white;
-        }
-
-        .btn-save:hover,
-        .btn-cancel:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-        }
-
-        .subdirectory-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .subdirectory-item {
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #f8f9fa;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background-color 0.2s ease;
-        }
-
-        .subdirectory-item:hover {
-            background-color: #f8f9fa;
-            margin: 0 -1rem;
-            padding-left: 1rem;
-            padding-right: 1rem;
-            border-radius: 8px;
-        }
-
-        .subdirectory-item:last-child {
-            border-bottom: none;
-        }
-
-        .subdirectory-title {
-            font-weight: 500;
-            color: #2c3e50;
-            font-size: 0.9rem;
-        }
-
-        .subdirectory-status {
-            font-size: 0.8rem;
-            padding: 0.2rem 0.5rem;
-            border-radius: 12px;
-            font-weight: 500;
-        }
-
-        .status-completed {
-            background-color: #d4edda;
-            color: #155724;
-        }
-
-        .status-inprogress {
-            background-color: #fff3cd;
-            color: #856404;
-        }
-
-        .status-planned {
-            background-color: #e2e3e5;
-            color: #383d41;
-        }
-
-        .project-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-        }
-
-        .project-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #ff9a9e, #a8c8ec);
-        }
-
-        .project-title {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: #2c3e50;
-        }
-
-        .project-description {
-            color: #666;
-            margin-bottom: 1.5rem;
-            line-height: 1.7;
-        }
-
-        .tech-stack {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .tech-tag {
-            background: #f8f9fa;
-            color: #495057;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            border: 1px solid #e9ecef;
-        }
-
-        .project-links {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .btn {
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
-        .btn-primary {
-            background: linear-gradient(45deg, #ff9a9e, #a8c8ec);
-            color: white;
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: #ff9a9e;
-            border: 2px solid #ff9a9e;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .skills-section {
-            background: white;
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            margin-bottom: 3rem;
-        }
-
-        .skills-title {
-            text-align: center;
-            font-size: 2rem;
-            margin-bottom: 2rem;
-            color: #2c3e50;
-        }
-
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .skill-category {
-            text-align: center;
-        }
-
-        .skill-category h3 {
-            color: #ff9a9e;
-            margin-bottom: 1rem;
-        }
-
-        .skill-list {
-            list-style: none;
-        }
-
-        .skill-list li {
-            margin-bottom: 0.5rem;
-            color: #666;
-        }
-
-        footer {
-            text-align: center;
-            color: white;
-            padding: 2rem 0;
-        }
-
-        .contact-info {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .contact-link {
-            color: white;
-            text-decoration: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .contact-link:hover {
-            opacity: 0.8;
-        }
-
-        /* 目录导航样式 */
-        .nav-menu {
-            position: fixed;
-            top: 50%;
-            left: 30px;
-            transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 1rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            z-index: 1000;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-
-        .nav-menu.hidden {
-            opacity: 0;
-            transform: translateY(-50%) translateX(-100%);
-            pointer-events: none;
-        }
-
-        .nav-toggle {
-            position: fixed;
-            top: 30px;
-            left: 30px;
-            background: rgba(255, 154, 158, 0.9);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            z-index: 1001;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .nav-toggle:hover {
-            background: rgba(255, 154, 158, 1);
-            transform: scale(1.1);
-        }
-
-        .nav-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            min-width: 180px;
-        }
-
-        .nav-item {
-            margin-bottom: 0.5rem;
-        }
-
-        .nav-link {
-            display: block;
-            padding: 0.5rem 1rem;
-            color: #2c3e50;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-            position: relative;
-        }
-
-        .nav-link:hover {
-            background: linear-gradient(45deg, #ff9a9e, #a8c8ec);
-            color: white;
-            transform: translateX(5px);
-        }
-
-        .nav-link.active {
-            background: rgba(255, 154, 158, 0.2);
-            color: #ff9a9e;
-            font-weight: 600;
-        }
-
-        .nav-link::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 3px;
-            height: 0;
-            background: #ff9a9e;
-            transition: height 0.3s ease;
-        }
-
-        .nav-link.active::before {
-            height: 60%;
-        }
-
-        /* 导航增强功能样式 */
-        .nav-menu.enhanced {
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        /* 面包屑导航 */
-        .breadcrumb {
-            position: fixed;
-            top: 90px;
-            left: 30px;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            color: #666;
-            z-index: 999;
-            transition: all 0.3s ease;
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-
-        .breadcrumb.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .breadcrumb-item {
-            display: inline;
-        }
-
-        .breadcrumb-item + .breadcrumb-item::before {
-            content: ' › ';
-            margin: 0 0.5rem;
-            color: #999;
-        }
-
-        .breadcrumb-item.active {
-            color: #ff9a9e;
-            font-weight: 500;
-        }
-
-        /* 进度指示器 */
-        .scroll-progress {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 0%;
-            height: 3px;
-            background: linear-gradient(90deg, #ff9a9e, #a8c8ec);
-            z-index: 1002;
-            transition: width 0.1s ease;
-        }
-
-        /* 快速导航浮动按钮 */
-        .quick-nav {
-            position: fixed;
-            right: 30px;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .quick-nav.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .quick-nav-item {
-            display: block;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: rgba(255, 154, 158, 0.3);
-            margin: 10px 0;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .quick-nav-item:hover {
-            background: rgba(255, 154, 158, 0.8);
-            transform: scale(1.3);
-        }
-
-        .quick-nav-item.active {
-            background: #ff9a9e;
-            transform: scale(1.2);
-        }
-
-        .quick-nav-item::after {
-            content: attr(data-label);
-            position: absolute;
-            right: 25px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 12px;
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .quick-nav-item:hover::after {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* 搜索功能 */
-        .search-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .search-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .search-container {
-            width: 90%;
-            max-width: 600px;
-            position: relative;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 20px 60px 20px 20px;
-            font-size: 1.5rem;
-            border: none;
-            border-radius: 10px;
-            outline: none;
-            background: white;
-        }
-
-        .search-close {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #666;
-        }
-
-        .search-results {
-            background: white;
-            border-radius: 10px;
-            margin-top: 10px;
-            max-height: 400px;
-            overflow-y: auto;
-            display: none;
-        }
-
-        .search-result-item {
-            padding: 15px 20px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .search-result-item:hover {
-            background-color: #f5f5f5;
-        }
-
-        .search-result-item:last-child {
-            border-bottom: none;
-        }
-
-        /* 主题切换 */
-        .theme-switcher {
-            position: fixed;
-            bottom: 90px;
-            right: 30px;
-            background: linear-gradient(45deg, #ff9a9e, #a8c8ec);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-            z-index: 1000;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .theme-switcher:hover {
-            transform: scale(1.1) rotate(180deg);
-        }
-
-        /* 暗黑主题 */
-        body.dark-theme {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            color: #ecf0f1;
-        }
-
-        .dark-theme .project-card {
-            background: #34495e;
-            color: #ecf0f1;
-        }
-
-        .dark-theme .skills-section,
-        .dark-theme .categories-section,
-        .dark-theme .content-editor {
-            background: #34495e;
-            color: #ecf0f1;
-        }
-
-        .dark-theme .nav-menu {
-            background: rgba(52, 73, 94, 0.95);
-        }
-
-        /* 键盘快捷键提示 */
-        .keyboard-shortcuts {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 10px 15px;
-            border-radius: 5px;
-            font-size: 0.8rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 1000;
-        }
-
-        .keyboard-shortcuts.visible {
-            opacity: 1;
-        }
-        .back-to-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: linear-gradient(45deg, #ff9a9e, #a8c8ec);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            z-index: 1000;
-            transition: all 0.3s ease;
-            opacity: 0;
-            transform: scale(0);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .back-to-top.visible {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .back-to-top:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-        }
-
-        @media (max-width: 768px) {
             h1 {
-                font-size: 2rem;
+                font-size: 3rem;
+                margin-bottom: 1rem;
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
             }
 
+            .subtitle {
+                font-size: 1.3rem;
+                opacity: 0.95;
+            }
+
+            /* 导航栏 */
+            .nav-bar {
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+                background: white;
+                box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+                padding: 15px 0;
+                margin-bottom: 30px;
+                border-radius: 10px;
+            }
+
+            .nav-links {
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 20px;
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .nav-links a {
+                text-decoration: none;
+                color: #2c3e50;
+                padding: 8px 20px;
+                border-radius: 20px;
+                transition: all 0.3s ease;
+                font-weight: 500;
+            }
+
+            .nav-links a:hover {
+                background: linear-gradient(135deg, #ff9a9e 0%, #a8c8ec 100%);
+                color: white;
+                transform: translateY(-2px);
+            }
+
+            /* 章节标题 */
+            .section-title {
+                font-size: 2.5rem;
+                color: #ff9a9e;
+                margin: 50px 0 30px;
+                padding-bottom: 15px;
+                border-bottom: 3px solid #ff9a9e;
+                position: relative;
+            }
+
+            .section-title::before {
+                content: '';
+                position: absolute;
+                bottom: -3px;
+                left: 0;
+                width: 100px;
+                height: 3px;
+                background: #a8c8ec;
+            }
+
+            /* 项目卡片网格 */
             .projects-grid {
-                grid-template-columns: 1fr;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+                gap: 30px;
+                margin-bottom: 50px;
             }
 
-            .contact-info {
-                flex-direction: column;
-                gap: 1rem;
+            .project-card {
+                background: white;
+                border-radius: 15px;
+                overflow: hidden;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+                transition: all 0.3s ease;
             }
 
-            /* 移动端导航调整 */
-            .nav-menu {
-                left: 10px;
-                top: 80px;
-                transform: none;
-                width: calc(100vw - 20px);
-                max-width: 300px;
+            .project-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 15px 40px rgba(255, 154, 158, 0.3);
             }
 
-            .nav-toggle {
-                left: 15px;
-                top: 15px;
+            .project-image {
+                width: 100%;
+                height: 220px;
+                object-fit: cover;
             }
 
+            .project-content {
+                padding: 25px;
+            }
+
+            .project-title {
+                font-size: 1.5rem;
+                color: #2c3e50;
+                margin-bottom: 15px;
+            }
+
+            .project-description {
+                color: #666;
+                margin-bottom: 20px;
+                line-height: 1.7;
+            }
+
+            .tech-stack {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin-bottom: 20px;
+            }
+
+            .tech-tag {
+                background: linear-gradient(135deg, #667eea20, #764ba220);
+                color: #667eea;
+                padding: 5px 12px;
+                border-radius: 15px;
+                font-size: 0.85rem;
+                font-weight: 500;
+            }
+
+            .project-links {
+                display: flex;
+                gap: 10px;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                border-radius: 8px;
+                text-decoration: none;
+                font-weight: 500;
+                transition: all 0.3s ease;
+                cursor: pointer;
+                border: none;
+                font-size: 0.95rem;
+            }
+
+            .btn-primary {
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                color: white;
+            }
+
+            .btn-primary:hover {
+                transform: scale(1.05);
+                box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            }
+
+            .btn-secondary {
+                background: #f0f0f0;
+                color: #2c3e50;
+            }
+
+            .btn-secondary:hover {
+                background: #e0e0e0;
+            }
+
+            /* 分类卡片 */
+            .categories-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 25px;
+                margin-bottom: 50px;
+            }
+
+            .category-card {
+                background: white;
+                padding: 30px;
+                border-radius: 15px;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+                transition: all 0.3s ease;
+                text-align: center;
+            }
+
+            .category-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 30px rgba(255, 154, 158, 0.2);
+            }
+
+            .category-icon {
+                font-size: 3rem;
+                margin-bottom: 15px;
+            }
+
+            .category-title {
+                font-size: 1.3rem;
+                color: #2c3e50;
+                margin-bottom: 12px;
+            }
+
+            .category-desc {
+                color: #666;
+                font-size: 0.95rem;
+                margin-bottom: 15px;
+            }
+
+            .category-count {
+                display: inline-block;
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                color: white;
+                padding: 5px 15px;
+                border-radius: 20px;
+                font-size: 0.9rem;
+                font-weight: 500;
+            }
+
+            /* 技能标签云 */
+            .skills-cloud {
+                background: white;
+                padding: 40px;
+                border-radius: 15px;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+                margin-bottom: 50px;
+            }
+
+            .skill-category {
+                margin-bottom: 30px;
+            }
+
+            .skill-category h3 {
+                color: #667eea;
+                margin-bottom: 15px;
+                font-size: 1.3rem;
+            }
+
+            .skill-tags {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .skill-tag {
+                background: linear-gradient(135deg, #ff9a9e15, #a8c8ec15);
+                color: #2c3e50;
+                padding: 8px 16px;
+                border-radius: 20px;
+                font-size: 0.9rem;
+                transition: all 0.3s ease;
+                cursor: pointer;
+                border: 2px solid transparent;
+            }
+
+            .skill-tag:hover {
+                background: linear-gradient(135deg, #ff9a9e, #a8c8ec);
+                color: white;
+                transform: scale(1.05);
+                border-color: #ff9a9e;
+            }
+
+            /* 可展开的学习笔记目录 */
+            .expandable-section {
+                background: white;
+                border-radius: 15px;
+                padding: 30px;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+                margin-bottom: 30px;
+            }
+
+            .catalog-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                cursor: pointer;
+                padding: 15px;
+                background: linear-gradient(135deg, #ff9a9e10, #a8c8ec10);
+                border-radius: 10px;
+                transition: all 0.3s ease;
+            }
+
+            .catalog-header:hover {
+                background: linear-gradient(135deg, #ff9a9e20, #a8c8ec20);
+            }
+
+            .catalog-header h3 {
+                margin: 0;
+                color: #2c3e50;
+                font-size: 1.5rem;
+            }
+
+            .expand-icon {
+                font-size: 1.5rem;
+                transition: transform 0.3s ease;
+            }
+
+            .expand-icon.expanded {
+                transform: rotate(180deg);
+            }
+
+            .catalog-content {
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.4s ease-out;
+            }
+
+            .catalog-content.expanded {
+                max-height: 2000px;
+                margin-top: 20px;
+            }
+
+            .catalog-section {
+                margin-bottom: 20px;
+                border: 2px solid #f0f0f0;
+                border-radius: 10px;
+                overflow: hidden;
+            }
+
+            .catalog-section-title {
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                color: white;
+                padding: 12px 20px;
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-weight: 600;
+                transition: all 0.3s ease;
+            }
+
+            .catalog-section-title:hover {
+                background: linear-gradient(135deg, #5568d3, #6a3f91);
+            }
+
+            .catalog-items {
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease-out;
+                background: #fafafa;
+            }
+
+            .catalog-items.expanded {
+                max-height: 600px;
+            }
+
+            .catalog-item {
+                padding: 12px 20px;
+                border-bottom: 1px solid #e0e0e0;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .catalog-item:hover {
+                background: linear-gradient(135deg, #667eea08, #764ba208);
+                padding-left: 30px;
+            }
+
+            .catalog-item:last-child {
+                border-bottom: none;
+            }
+
+            .catalog-sub-items {
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease-out;
+                margin-top: 10px;
+            }
+
+            .catalog-sub-items.expanded {
+                max-height: 400px;
+            }
+
+            .catalog-sub-item {
+                padding: 8px 20px 8px 40px;
+                background: white;
+                border-left: 3px solid #667eea;
+                margin-bottom: 5px;
+                border-radius: 5px;
+                transition: all 0.3s ease;
+            }
+
+            .catalog-sub-item:hover {
+                background: linear-gradient(135deg, #ff9a9e10, #a8c8ec10);
+                padding-left: 45px;
+            }
+
+            .catalog-sub-item a {
+                color: inherit;
+                text-decoration: none;
+                display: block;
+                width: 100%;
+                transition: all 0.3s ease;
+            }
+
+            .catalog-sub-item a:hover {
+                color: #ff9a9e;
+                font-weight: 500;
+            }
+
+            /* 主题切换按钮 */
+            .theme-toggle {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #ff9a9e, #a8c8ec);
+                color: white;
+                border: none;
+                padding: 12px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 24px;
+                box-shadow: 0 4px 15px rgba(255, 154, 158, 0.4);
+                transition: all 0.3s ease;
+                z-index: 1001;
+            }
+
+            .theme-toggle:hover {
+                transform: scale(1.1) rotate(15deg);
+            }
+
+            /* 返回顶部按钮 */
             .back-to-top {
-                right: 15px;
-                bottom: 15px;
-                width: 45px;
-                height: 45px;
-            }
-
-            /* 移动端默认隐藏导航 */
-            .nav-menu {
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                color: white;
+                border: none;
+                padding: 15px 18px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 20px;
+                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+                transition: all 0.3s ease;
                 opacity: 0;
-                transform: translateY(-20px);
-                pointer-events: none;
+                visibility: hidden;
+                z-index: 1000;
             }
 
-            .nav-menu:not(.hidden) {
+            .back-to-top.visible {
                 opacity: 1;
-                transform: translateY(0);
-                pointer-events: auto;
+                visibility: visible;
             }
-        }
-    </style>
-</head>
-<body>
-    <!-- 导航切换按钮 -->
-    <button class="nav-toggle" onclick="toggleNav()">☰</button>
-    
-    <!-- 滚动进度条 -->
-    <div class="scroll-progress" id="scrollProgress"></div>
-    
-    <!-- 面包屑导航 -->
-    <div class="breadcrumb" id="breadcrumb">
-        <span class="breadcrumb-item">首页</span>
-    </div>
-    
-    <!-- 快速导航 -->
-    <div class="quick-nav" id="quickNav">
-        <span class="quick-nav-item" data-section="home" data-label="首页"></span>
-        <span class="quick-nav-item" data-section="projects" data-label="项目"></span>
-        <span class="quick-nav-item" data-section="categories" data-label="分类"></span>
-        <span class="quick-nav-item" data-section="skills" data-label="技能"></span>
-        <span class="quick-nav-item" data-section="contact" data-label="联系"></span>
-    </div>
-    
-    <!-- 搜索覆盖层 -->
-    <div class="search-overlay" id="searchOverlay">
-        <div class="search-container">
-            <input type="text" class="search-input" id="searchInput" placeholder="搜索内容...">
-            <button class="search-close" onclick="closeSearch()">×</button>
-            <div class="search-results" id="searchResults"></div>
-        </div>
-    </div>
-    
-    <!-- 主题切换按钮 -->
-    <button class="theme-switcher" onclick="toggleTheme()" title="切换主题">🌓</button>
-    
-    <!-- 键盘快捷键提示 -->
-    <div class="keyboard-shortcuts" id="keyboardShortcuts">
-        按 / 搜索 | Esc 关闭 | ← → 导航
-    </div>
-    
-    <!-- 侧边导航菜单 -->
-    <nav class="nav-menu" id="navMenu">
-        <ul class="nav-list">
-            <li class="nav-item">
-                <a href="#home" class="nav-link">🏠 首页</a>
-            </li>
-            <li class="nav-item">
-                <a href="#projects" class="nav-link">💼 项目展示</a>
-            </li>
-            <li class="nav-item">
-                <a href="#blog-project" class="nav-link">├─ 个人博客</a>
-            </li>
-            <li class="nav-item">
-                <a href="#3d-engine" class="nav-link">├─ 3D渲染引擎</a>
-            </li>
-            <li class="nav-item">
-                <a href="#robomaster" class="nav-link">├─ RoboMaster</a>
-            </li>
-            <li class="nav-item">
-                <a href="#study-notes" class="nav-link">└─ 学习笔记</a>
-            </li>
-            <li class="nav-item">
-                <a href="#categories" class="nav-link">📂 内容分类</a>
-            </li>
-            <li class="nav-item">
-                <a href="#skills" class="nav-link">🛠️ 技术栈</a>
-            </li>
-            <li class="nav-item">
-                <a href="#contact" class="nav-link">📞 联系方式</a>
-            </li>
-            <li class="nav-item">
-                <button class="nav-link" onclick="openSearch()" style="background: none; border: none; color: inherit; cursor: pointer;">🔍 搜索</button>
-            </li>
-        </ul>
-    </nav>
-    
-    <!-- 回到顶部按钮 -->
-    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
 
-    <div class="container">
-        <header id="home">
-            <h1>Kyoko的个人网站</h1>
-            <p class="subtitle">一个平凡的技术菜鸟</p>
-        </header>
+            .back-to-top:hover {
+                transform: translateY(-5px);
+            }
 
-        <div class="projects-grid" id="projects">
-            <div class="project-card" id="blog-project">
-                <img src="images/image4.jpg" alt="个人博客项目截图" class="project-image">
-                <div class="project-content">
-                    <h2 class="project-title">🌐 个人博客网站</h2>
-                    <p class="project-description">
-                        一个响应式的个人博客平台，支持文章发布、分类管理和评论系统。采用现代化的前端技术栈，提供流畅的用户体验。
-                    </p>
-                    <div class="tech-stack">
-                        <span class="tech-tag">HTML5</span>
-                        <span class="tech-tag">CSS3</span>
-                        <span class="tech-tag">JavaScript</span>
-                        <span class="tech-tag">Bootstrap</span>
-                    </div>
-                    <div class="project-links">
-                        <a href="#" class="btn btn-primary">在线预览</a>
-                        <a href="#" class="btn btn-secondary">查看代码</a>
-                    </div>
-                </div>
-            </div>
+            /* 深色模式 */
+            html[data-theme="dark"] body {
+                color: #adbac7;
+            }
 
-            <div class="project-card" id="3d-engine">
-                <img src="images/image3.jpg" alt="3D渲染引擎项目截图" class="project-image">
-                <div class="project-content">
-                    <h2 class="project-title">🎨 3D渲染引擎</h2>
-                    <p class="project-description">
-                        基于WebGL开发的实时3D渲染引擎，支持PBR材质、阴影映射和后处理效果。实现了高效的场景管理和光照计算系统。
-                    </p>
-                    <div class="tech-stack">
-                        <span class="tech-tag">WebGL</span>
-                        <span class="tech-tag">GLSL</span>
-                        <span class="tech-tag">Three.js</span>
-                        <span class="tech-tag">C++</span>
-                    </div>
-                    <div class="project-links">
-                        <a href="#" class="btn btn-primary">在线演示</a>
-                        <a href="#" class="btn btn-secondary">源码分析</a>
-                    </div>
-                </div>
-            </div>
+            html[data-theme="dark"] .nav-bar,
+            html[data-theme="dark"] .project-card,
+            html[data-theme="dark"] .category-card,
+            html[data-theme="dark"] .skills-cloud,
+            html[data-theme="dark"] .expandable-section {
+                background: #2d333b;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            }
 
-            <div class="project-card" id="robomaster">
-                <img src="images/image1.jpg" alt="robomaster" class="project-image">
-                <div class="project-content">
-                    <h2 class="project-title">robomaster</h2>
-                    <p class="project-description">
-                        视觉算法的开发以及仓库的维护
-                    </p>
-                    <div class="tech-stack">
-                        <span class="tech-tag">TensorFlow</span>
-                        <span class="tech-tag">pytorch</span>
-                        <span class="tech-tag">Docker</span>
-                        <span class="tech-tag">C++</span>
-                        <span class="tech-tag">ros2</span>
-                        <span class="tech-tag">OpenCV</span>
-                    </div>
-                    <div class="project-links">
-                        <a href="#" class="btn btn-primary">项目经历</a>
-                        <a href="#" class="btn btn-secondary">GitHub</a>
-                    </div>
-                </div>
-            </div>
+            html[data-theme="dark"] .section-title,
+            html[data-theme="dark"] .project-title,
+            html[data-theme="dark"] .category-title,
+            html[data-theme="dark"] h1,
+            html[data-theme="dark"] h2,
+            html[data-theme="dark"] h3 {
+                color: #adbac7;
+            }
 
-            <div class="project-card expandable-project" id="study-notes">
-                <img src="images/image2.jpg" alt="学习笔记" class="project-image">
-                <div class="project-content">
-                    <h2 class="project-title">
-                        学习笔记
-                        <button class="expand-btn" onclick="toggleSubdirectory(this)">▼</button>
-                    </h2>
-                    <p class="project-description">
-                        数学，物理，计算机科学等各类学习笔记的整理与分享
-                    </p>
-                    <div class="tech-stack">
-                        <span class="tech-tag">线性代数</span>
-                        <span class="tech-tag">概率论</span>
-                        <span class="tech-tag">高数</span>
-                        <span class="tech-tag">大物</span>
-                        <span class="tech-tag">计算机科学</span>
-                        <span class="tech-tag">计算机网络</span>
-                        <span class="tech-tag">操作系统</span>
-                        <span class="tech-tag">复变函数与积分变换</span>
-                    </div>
-                    
-                    <div class="subdirectory">
-                        <div class="catalog-container">
-                            <h4 class="catalog-title">📚 学习笔记目录</h4>
-                            
-                            <!-- 线性代数 -->
-                            <div class="catalog-section">
-                                <h5 class="catalog-section-title" onclick="toggleCatalogSection(this)">
-                                    <span class="catalog-icon">📐</span>
-                                    线性代数
-                                    <span class="catalog-toggle">▶</span>
-                                </h5>
-                                <div class="catalog-subsection">
-                                    <div class="catalog-item">
-                                        <h6 class="catalog-sub-title" onclick="toggleCatalogItem(this)">
-                                            <span class="catalog-marker">▶</span>
-                                            向量
-                                        </h6>
-                                        <ul class="catalog-list">
-                                            <li><a href="#" class="catalog-link">方程组的向量表示</a></li>
-                                            <li><a href="#" class="catalog-link">线性关系</a></li>
-                                            <li><a href="#" class="catalog-link">线性表示与线性组合</a></li>
-                                            <li><a href="#" class="catalog-link">线性相关与无关</a></li>
-                                            <li><a href="#" class="catalog-link">极大线性无关组</a></li>
-                                            <li><a href="#" class="catalog-link">向量组的等价</a></li>
-                                        </ul>
-                                    </div>
-                                    
-                                    <div class="catalog-item">
-                                        <h6 class="catalog-sub-title" onclick="toggleCatalogItem(this)">
-                                            <span class="catalog-marker">▶</span>
-                                            矩阵
-                                        </h6>
-                                        <ul class="catalog-list">
-                                            <li><a href="#" class="catalog-link">常用矩阵</a></li>
-                                            <li><a href="#" class="catalog-link">矩阵运算</a></li>
-                                            <li><a href="#" class="catalog-link">矩阵的秩</a></li>
-                                            <li><a href="#" class="catalog-link">相抵标准型</a></li>
-                                            <li><a href="#" class="catalog-link">秩与方程组</a></li>
-                                        </ul>
-                                    </div>
+            html[data-theme="dark"] .nav-links a {
+                color: #adbac7;
+            }
 
-                                    <div class="catalog-item">
-                                        <h6 class="catalog-sub-title" onclick="toggleCatalogItem(this)">
-                                            <span class="catalog-marker">▶</span>
-                                            行列式
-                                        </h6>
-                                        <ul class="catalog-list">
-                                            <li><a href="#" class="catalog-link">逆序数</a></li>
-                                            <li><a href="#" class="catalog-link">子式与余子式</a></li>
-                                            <li><a href="#" class="catalog-link">行列式性质</a></li>
-                                        </ul>
-                                    </div>
+            html[data-theme="dark"] .catalog-items {
+                background: #22272e;
+            }
 
-                                    <div class="catalog-item">
-                                        <h6 class="catalog-sub-title" onclick="toggleCatalogItem(this)">
-                                            <span class="catalog-marker">▶</span>
-                                            相似对角化
-                                        </h6>
-                                        <ul class="catalog-list">
-                                            <li><a href="#" class="catalog-link">特征值与特征向量</a></li>
-                                            <li><a href="#" class="catalog-link">相似矩阵</a></li>
-                                            <li><a href="#" class="catalog-link">相似对角化</a></li>
-                                        </ul>
-                                    </div>
+            html[data-theme="dark"] .catalog-sub-item {
+                background: #2d333b;
+            }
 
-                                    <div class="catalog-item">
-                                        <h6 class="catalog-sub-title" onclick="toggleCatalogItem(this)">
-                                            <span class="catalog-marker">▶</span>
-                                            线性空间
-                                        </h6>
-                                        <ul class="catalog-list">
-                                            <li><a href="#" class="catalog-link">线性空间定义</a></li>
-                                            <li><a href="#" class="catalog-link">线性子空间</a></li>
-                                            <li><a href="#" class="catalog-link">基与坐标</a></li>
-                                            <li><a href="#" class="catalog-link">基变换与坐标变换</a></li>
-                                            <li><a href="#" class="catalog-link">同构映射</a></li>
-                                            <li><a href="#" class="catalog-link">欧式空间</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
+            html[data-theme="dark"] .catalog-sub-item a {
+                color: #adbac7;
+            }
+
+            html[data-theme="dark"] .catalog-sub-item a:hover {
+                color: #ff9a9e;
+            }
+
+            html[data-theme="dark"] .btn-secondary {
+                background: #373e47;
+                color: #adbac7;
+            }
+
+            html[data-theme="dark"] .catalog-section {
+                border-color: #373e47;
+            }
+        </style>
+        <script>
+            const userMode = localStorage.getItem("portfolio-theme");
+            const systemDarkMode = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+            if (userMode === "dark" || (userMode !== "light" && systemDarkMode)) {
+                document.documentElement.setAttribute("data-theme", "dark");
+            }
+        </script>
+    </head>
+    <body>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="切换主题">🌓</button>
+        <button class="back-to-top" onclick="scrollToTop()" aria-label="返回顶部">↑</button>
+
+        <div class="container">
+            <header id="top">
+                <h1>欢迎来到Kyoko酱的个人网站</h1>
+                <p class="subtitle">机器人工程 | 技术美术 | 前端开发</p>
+            </header>
+
+            <!-- 导航栏 -->
+            <nav class="nav-bar">
+                <ul class="nav-links">
+                    <li><a href="#projects">🚀 项目作品</a></li>
+                    <li><a href="#study-notes">📚 学习笔记</a></li>
+                    <li><a href="#categories">🗂️ 内容分类</a></li>
+                    <li><a href="#skills">💻 技术栈</a></li>
+                </ul>
+            </nav>
+
+            <!-- 项目作品区 -->
+            <section id="projects">
+                <h2 class="section-title">🚀 项目作品</h2>
+                <div class="projects-grid">
+                    <!-- 个人博客网站 -->
+                    <div class="project-card">
+                        <img src="images/image4.jpg" alt="个人博客项目截图" class="project-image" onerror="this.src='https://via.placeholder.com/400x220/667eea/ffffff?text=Blog'">
+                        <div class="project-content">
+                            <h3 class="project-title">🌐 个人博客网站</h3>
+                            <p class="project-description">
+                                一个响应式的个人博客平台，支持文章发布、分类管理和评论系统。采用现代化的前端技术栈，提供流畅的用户体验。
+                            </p>
+                            <div class="tech-stack">
+                                <span class="tech-tag">HTML5</span>
+                                <span class="tech-tag">CSS3</span>
+                                <span class="tech-tag">JavaScript</span>
+                                <span class="tech-tag">Bootstrap</span>
                             </div>
-
-                            <!-- 高等数学 -->
-                            <div class="catalog-section">
-                                <h5 class="catalog-section-title" onclick="toggleCatalogSection(this)">
-                                    <span class="catalog-icon">📈</span>
-                                    高等数学
-                                    <span class="catalog-toggle">▶</span>
-                                </h5>
-                                <div class="catalog-subsection">
-                                    <div class="catalog-item">
-                                        <h6 class="catalog-sub-title" onclick="toggleCatalogItem(this)">
-                                            <span class="catalog-marker">▶</span>
-                                            函数与极限
-                                        </h6>
-                                        <ul class="catalog-list">
-                                            <li><a href="#" class="catalog-link">函数性态</a></li>
-                                            <li><a href="#" class="catalog-link">函数的连续性</a></li>
-                                            <li><a href="#" class="catalog-link">映射的分类</a></li>
-                                            <li><a href="#" class="catalog-link">极限的定义</a></li>
-                                            <li><a href="#" class="catalog-link">极限的求法</a></li>
-                                            <li><a href="#" class="catalog-link">性质与定理</a></li>
-                                        </ul>
-                                    </div>
-
-                                    <div class="catalog-item">
-                                        <h6 class="catalog-sub-title" onclick="toggleCatalogItem(this)">
-                                            <span class="catalog-marker">▶</span>
-                                            导数与微分
-                                        </h6>
-                                        <ul class="catalog-list">
-                                            <li><a href="#" class="catalog-link">导数定义</a></li>
-                                            <li><a href="#" class="catalog-link">运算法则</a></li>
-                                            <li><a href="#" class="catalog-link">链式法则</a></li>
-                                            <li><a href="#" class="catalog-link">高阶导数</a></li>
-                                            <li><a href="#" class="catalog-link">微分</a></li>
-                                            <li><a href="#" class="catalog-link">定理与法则</a></li>
-                                        </ul>
-                                    </div>
-
-                                    <div class="catalog-item">
-                                        <h6 class="catalog-sub-title" onclick="toggleCatalogItem(this)">
-                                            <span class="catalog-marker">▶</span>
-                                            积分
-                                        </h6>
-                                        <ul class="catalog-list">
-                                            <li><a href="#" class="catalog-link">不定积分</a></li>
-                                            <li><a href="#" class="catalog-link">定积分</a></li>
-                                            <li><a href="#" class="catalog-link">积分方法</a></li>
-                                            <li><a href="#" class="catalog-link">反常积分</a></li>
-                                            <li><a href="#" class="catalog-link">积分应用</a></li>
-                                        </ul>
-                                    </div>
-
-                                    <div class="catalog-item">
-                                        <h6 class="catalog-sub-title" onclick="toggleCatalogItem(this)">
-                                            <span class="catalog-marker">▶</span>
-                                            微分方程
-                                        </h6>
-                                        <ul class="catalog-list">
-                                            <li><a href="#" class="catalog-link">一阶微分方程</a></li>
-                                            <li><a href="#" class="catalog-link">一阶线性微分方程</a></li>
-                                            <li><a href="#" class="catalog-link">常系数线性齐次微分方程</a></li>
-                                            <li><a href="#" class="catalog-link">常系数线性非齐次微分方程</a></li>
-                                        </ul>
-                                    </div>
-
-                                    <div class="catalog-item">
-                                        <h6 class="catalog-sub-title" onclick="toggleCatalogItem(this)">
-                                            <span class="catalog-marker">▶</span>
-                                            空间解析几何
-                                        </h6>
-                                        <ul class="catalog-list">
-                                            <li><a href="#" class="catalog-link">向量</a></li>
-                                            <li><a href="#" class="catalog-link">直线方程</a></li>
-                                            <li><a href="#" class="catalog-link">平面方程</a></li>
-                                            <li><a href="#" class="catalog-link">点线面位置关系</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 计算机科学 -->
-                            <div class="catalog-section">
-                                <h5 class="catalog-section-title" onclick="toggleCatalogSection(this)">
-                                    <span class="catalog-icon">💻</span>
-                                    计算机科学
-                                    <span class="catalog-toggle">▶</span>
-                                </h5>
-                                <div class="catalog-subsection">
-                                    <div class="catalog-item">
-                                        <h6 class="catalog-sub-title" onclick="toggleCatalogItem(this)">
-                                            <span class="catalog-marker">▶</span>
-                                            数据结构与算法
-                                        </h6>
-                                        <ul class="catalog-list">
-                                            <li><a href="#" class="catalog-link">线性表</a></li>
-                                            <li><a href="#" class="catalog-link">栈与队列</a></li>
-                                            <li><a href="#" class="catalog-link">树与二叉树</a></li>
-                                            <li><a href="#" class="catalog-link">图</a></li>
-                                            <li><a href="#" class="catalog-link">排序算法</a></li>
-                                            <li><a href="#" class="catalog-link">查找算法</a></li>
-                                        </ul>
-                                    </div>
-
-                                    <div class="catalog-item">
-                                        <h6 class="catalog-sub-title" onclick="toggleCatalogItem(this)">
-                                            <span class="catalog-marker">▶</span>
-                                            计算机网络
-                                        </h6>
-                                        <ul class="catalog-list">
-                                            <li><a href="#" class="catalog-link">OSI七层模型</a></li>
-                                            <li><a href="#" class="catalog-link">TCP/IP协议</a></li>
-                                            <li><a href="#" class="catalog-link">HTTP协议</a></li>
-                                            <li><a href="#" class="catalog-link">网络安全</a></li>
-                                        </ul>
-                                    </div>
-
-                                    <div class="catalog-item">
-                                        <h6 class="catalog-sub-title" onclick="toggleCatalogItem(this)">
-                                            <span class="catalog-marker">▶</span>
-                                            操作系统
-                                        </h6>
-                                        <ul class="catalog-list">
-                                            <li><a href="#" class="catalog-link">进程管理</a></li>
-                                            <li><a href="#" class="catalog-link">内存管理</a></li>
-                                            <li><a href="#" class="catalog-link">文件系统</a></li>
-                                            <li><a href="#" class="catalog-link">I/O系统</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
+                            <div class="project-links">
+                                <a href="#" class="btn btn-primary">在线预览</a>
+                                <a href="#" class="btn btn-secondary">查看代码</a>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="project-links">
-                        <a href="#" class="btn btn-primary">查看笔记</a>
-                        <a href="#" class="btn btn-secondary">下载PDF</a>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- 分类管理区域 -->
-        <div class="categories-section" id="categories">
-            <h2 class="categories-title">内容分类管理</h2>
-            
-            <!-- 分类过滤器 -->
-            <div class="category-filter">
-                <button class="category-btn active" onclick="filterByCategory('all')">全部</button>
-                <button class="category-btn" onclick="filterByCategory('academic')">学术笔记</button>
-                <button class="category-btn" onclick="filterByCategory('project')">项目作品</button>
-                <button class="category-btn" onclick="filterByCategory('tutorial')">教程分享</button>
-                <button class="category-btn" onclick="filterByCategory('thoughts')">思考随笔</button>
-                <button class="category-btn" onclick="filterByCategory('resources')">资源收集</button>
-            </div>
-
-            <!-- 分类网格 -->
-            <div class="category-grid">
-                <div class="category-item" data-category="academic">
-                    <div class="category-item-header">
-                        <span class="category-icon">📚</span>
-                        <h3 class="category-item-title">学术笔记</h3>
-                        <span class="category-item-count">12</span>
-                    </div>
-                    <p class="category-item-description">
-                        数学、物理、计算机科学等学科的学习笔记和知识整理，包括课程总结、概念解析、习题解答等。
-                    </p>
-                    <div class="category-tags">
-                        <span class="category-tag">线性代数</span>
-                        <span class="category-tag">高等数学</span>
-                        <span class="category-tag">计算机网络</span>
-                        <span class="category-tag">数据结构</span>
-                    </div>
-                </div>
-
-                <div class="category-item" data-category="project">
-                    <div class="category-item-header">
-                        <span class="category-icon">🛠️</span>
-                        <h3 class="category-item-title">项目作品</h3>
-                        <span class="category-item-count">8</span>
-                    </div>
-                    <p class="category-item-description">
-                        个人开发的各类项目，包括网站、应用、工具等，记录开发过程、技术选型和项目经验。
-                    </p>
-                    <div class="category-tags">
-                        <span class="category-tag">Web开发</span>
-                        <span class="category-tag">3D渲染</span>
-                        <span class="category-tag">RoboMaster</span>
-                        <span class="category-tag">机器人</span>
-                    </div>
-                </div>
-
-                <div class="category-item" data-category="tutorial">
-                    <div class="category-item-header">
-                        <span class="category-icon">🎯</span>
-                        <h3 class="category-item-title">教程分享</h3>
-                        <span class="category-item-count">15</span>
-                    </div>
-                    <p class="category-item-description">
-                        技术教程、使用指南、最佳实践等分享内容，帮助他人快速上手和解决问题。
-                    </p>
-                    <div class="category-tags">
-                        <span class="category-tag">前端开发</span>
-                        <span class="category-tag">工具使用</span>
-                        <span class="category-tag">环境配置</span>
-                        <span class="category-tag">问题解决</span>
-                    </div>
-                </div>
-
-                <div class="category-item" data-category="thoughts">
-                    <div class="category-item-header">
-                        <span class="category-icon">💭</span>
-                        <h3 class="category-item-title">思考随笔</h3>
-                        <span class="category-item-count">6</span>
-                    </div>
-                    <p class="category-item-description">
-                        学习感悟、技术思考、生活随笔等个人观点和想法的记录与分享。
-                    </p>
-                    <div class="category-tags">
-                        <span class="category-tag">学习心得</span>
-                        <span class="category-tag">技术思考</span>
-                        <span class="category-tag">生活感悟</span>
-                        <span class="category-tag">未来规划</span>
-                    </div>
-                </div>
-
-                <div class="category-item" data-category="resources">
-                    <div class="category-item-header">
-                        <span class="category-icon">🔗</span>
-                        <h3 class="category-item-title">资源收集</h3>
-                        <span class="category-item-count">20</span>
-                    </div>
-                    <p class="category-item-description">
-                        有用的网站、工具、文档、课程等资源的整理和推荐，方便查找和使用。
-                    </p>
-                    <div class="category-tags">
-                        <span class="category-tag">学习资源</span>
-                        <span class="category-tag">开发工具</span>
-                        <span class="category-tag">设计素材</span>
-                        <span class="category-tag">参考文档</span>
-                    </div>
-                </div>
-
-                <div class="category-item" data-category="academic">
-                    <div class="category-item-header">
-                        <span class="category-icon">🧮</span>
-                        <h3 class="category-item-title">数学建模</h3>
-                        <span class="category-item-count">5</span>
-                    </div>
-                    <p class="category-item-description">
-                        数学建模竞赛、算法设计、数据分析等相关内容，包括模型思路和实现方法。
-                    </p>
-                    <div class="category-tags">
-                        <span class="category-tag">数学建模</span>
-                        <span class="category-tag">算法设计</span>
-                        <span class="category-tag">数据分析</span>
-                        <span class="category-tag">优化理论</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 内容编写区域 -->
-        <div class="content-editor" id="content-editor">
-            <div class="editor-header">
-                <h2 class="editor-title">内容编写</h2>
-                <button class="add-content-btn" onclick="toggleContentForm()">+ 新建内容</button>
-            </div>
-
-            <!-- 内容编写表单 -->
-            <div class="content-form" id="contentForm">
-                <div class="form-group">
-                    <label class="form-label">标题</label>
-                    <input type="text" class="form-input" id="contentTitle" placeholder="请输入内容标题">
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">分类</label>
-                    <select class="form-select" id="contentCategory">
-                        <option value="academic">学术笔记</option>
-                        <option value="project">项目作品</option>
-                        <option value="tutorial">教程分享</option>
-                        <option value="thoughts">思考随笔</option>
-                        <option value="resources">资源收集</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">标签</label>
-                    <input type="text" class="form-input" id="contentTags" placeholder="请输入标签，用逗号分隔">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">内容描述</label>
-                    <textarea class="form-textarea" id="contentDescription" placeholder="请输入内容描述或摘要"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">详细内容</label>
-                    <textarea class="form-textarea" id="contentBody" placeholder="请输入详细内容" style="min-height: 200px;"></textarea>
-                </div>
-
-                <div class="form-actions">
-                    <button class="btn-cancel" onclick="toggleContentForm()">取消</button>
-                    <button class="btn-save" onclick="saveContent()">保存</button>
-                </div>
-            </div>
-
-            <!-- 内容列表将在这里动态显示 -->
-            <div id="contentList">
-                <!-- 内容项目将通过JavaScript动态生成 -->
-            </div>
-        </div>
-
-        <div class="skills-section" id="skills">
-            <h2 class="skills-title">技术栈</h2>
-            <div class="skills-grid">
-                <div class="skill-category">
-                    <h3>前端开发</h3>
-                    <ul class="skill-list">
-                        <li>HTML5 / CSS3</li>
-                        <li>JavaScript / TypeScript</li>
-                        <li>React / Vue.js</li>
-                        <li>响应式设计</li>
-                    </ul>
-                </div>
-                <div class="skill-category">
-                    <h3>机器人工程</h3>
-                    <ul class="skill-list">
-                        <li>C/C++</li>
-                        <li>ros2</li>
-                        <li>robomaster</li>
-                        <li>自动化控制</li>
-                        <li>nav2</li>
-                        <li>SLAM</li>
-                    </ul>
-                </div>
-                <div class="skill-category">
-                    <h3>技术美术</h3>
-                    <ul class="skill-list">
-                        <li>OpenGL</li>
-                        <li>Vulkan</li>
-                        <li>DirectX</li>
-                        <li>houdini</li>
-                        <li>3ds Max</li>
-                    </ul>
-                </div>
-                <div class="skill-category">
-                    <h3>工具与平台</h3>
-                    <ul class="skill-list">
-                        <li>Git / GitHub</li>
-                        <li>Docker / AWS</li>
-                        <li>CI/CD</li>
-                        <li>Figma / PS</li>
-                    </ul>
-                </div>
-                <div class="skill-category">
-                    <h3>正在学习</h3>
-                    <ul class="skill-list">
-                        <li>Machine Learning</li>
-                        <li>计算机视觉</li>
-                        <li>GraphQL</li>
-                        <li>Web3</li>
-                        <li>风格化渲染</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <footer id="contact">
-            <div class="contact-info">
-                <a href="mailto:kyoko@example.com" class="contact-link">📧 tangjing060128@gmail.com</a>
-                <a href="https://github.com/kyoko" class="contact-link">🐙 GitHub https://github.com/SAM0619TJ</a>
-                <a href="https://linkedin.com/in/kyoko" class="contact-link"> Bilibili https://space.bilibili.com/409491358</a>
-                <a href="https://twitter.com/kyoko" class="contact-link">🐦 Twitter</a>
-            </div>
-            <p>&copy; 2025 Kyoko. 虽然生活很痛，但依然要热爱生活的每一天</p>
-        </footer>
-    </div>
-
-    <script>
-        // 导航菜单切换功能
-        let navVisible = true;
-        
-        function toggleNav() {
-            const navMenu = document.getElementById('navMenu');
-            const navToggle = document.querySelector('.nav-toggle');
-            
-            navVisible = !navVisible;
-            
-            if (navVisible) {
-                navMenu.classList.remove('hidden');
-                navToggle.textContent = '✕';
-            } else {
-                navMenu.classList.add('hidden');
-                navToggle.textContent = '☰';
-            }
-        }
-
-        // 平滑滚动到目标位置
-        function smoothScrollTo(element) {
-            const targetPosition = element.offsetTop - 100; // 留一些顶部空间
-            const startPosition = window.pageYOffset;
-            const distance = targetPosition - startPosition;
-            const duration = 800;
-            let start = null;
-
-            function animation(currentTime) {
-                if (start === null) start = currentTime;
-                const timeElapsed = currentTime - start;
-                const run = ease(timeElapsed, startPosition, distance, duration);
-                window.scrollTo(0, run);
-                if (timeElapsed < duration) requestAnimationFrame(animation);
-            }
-
-            function ease(t, b, c, d) {
-                t /= d / 2;
-                if (t < 1) return c / 2 * t * t + b;
-                t--;
-                return -c / 2 * (t * (t - 2) - 1) + b;
-            }
-
-            requestAnimationFrame(animation);
-        }
-
-        // 回到顶部功能
-        function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
-
-        // 高亮当前导航项
-        function highlightCurrentNav() {
-            const sections = document.querySelectorAll('[id]');
-            const navLinks = document.querySelectorAll('.nav-link');
-            const scrollPos = window.pageYOffset + 150;
-
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.offsetHeight;
-                const sectionId = section.getAttribute('id');
-
-                if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
-                    navLinks.forEach(link => {
-                        link.classList.remove('active');
-                        if (link.getAttribute('href') === `#${sectionId}`) {
-                            link.classList.add('active');
-                        }
-                    });
-                }
-            });
-        }
-
-        // 显示/隐藏回到顶部按钮
-        function toggleBackToTop() {
-            const backToTopBtn = document.getElementById('backToTop');
-            if (window.pageYOffset > 300) {
-                backToTopBtn.classList.add('visible');
-            } else {
-                backToTopBtn.classList.remove('visible');
-            }
-        }
-
-        // 子目录展开/收起功能
-        function toggleSubdirectory(button) {
-            const subdirectory = button.closest('.project-content').querySelector('.subdirectory');
-            const isExpanded = subdirectory.classList.contains('expanded');
-            
-            if (isExpanded) {
-                subdirectory.classList.remove('expanded');
-                button.classList.remove('expanded');
-                button.textContent = '▼';
-            } else {
-                subdirectory.classList.add('expanded');
-                button.classList.add('expanded');
-                button.textContent = '▲';
-            }
-        }
-
-        // 新的目录切换功能
-        function toggleCatalogSection(element) {
-            const subsection = element.nextElementSibling;
-            subsection.classList.toggle('expanded');
-            element.classList.toggle('expanded');
-        }
-
-        function toggleCatalogItem(element) {
-            const list = element.nextElementSibling;
-            list.classList.toggle('expanded');
-            element.classList.toggle('expanded');
-        }
-
-        // 平滑滚动到指定位置
-        function scrollToSection(sectionId) {
-            const element = document.getElementById(sectionId);
-            if (element) {
-                element.scrollIntoView({ 
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        }
-
-        // 分类过滤功能
-        function filterByCategory(category) {
-            const items = document.querySelectorAll('.category-item');
-            const buttons = document.querySelectorAll('.category-btn');
-            
-            // 更新按钮状态
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            // 过滤分类项目
-            items.forEach(item => {
-                if (category === 'all' || item.dataset.category === category) {
-                    item.classList.remove('hidden');
-                } else {
-                    item.classList.add('hidden');
-                }
-            });
-        }
-
-        // 内容编写功能
-        let contentFormVisible = false;
-        let contentData = JSON.parse(localStorage.getItem('kyoko_content_data') || '[]');
-
-        function toggleContentForm() {
-            const form = document.getElementById('contentForm');
-            contentFormVisible = !contentFormVisible;
-            
-            if (contentFormVisible) {
-                form.classList.add('active');
-                document.getElementById('contentTitle').focus();
-            } else {
-                form.classList.remove('active');
-                clearForm();
-            }
-        }
-
-        function clearForm() {
-            document.getElementById('contentTitle').value = '';
-            document.getElementById('contentCategory').value = 'academic';
-            document.getElementById('contentTags').value = '';
-            document.getElementById('contentDescription').value = '';
-            document.getElementById('contentBody').value = '';
-        }
-
-        function saveContent() {
-            const title = document.getElementById('contentTitle').value.trim();
-            const category = document.getElementById('contentCategory').value;
-            const tags = document.getElementById('contentTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
-            const description = document.getElementById('contentDescription').value.trim();
-            const body = document.getElementById('contentBody').value.trim();
-            
-            if (!title || !description) {
-                alert('请填写标题和描述！');
-                return;
-            }
-            
-            const content = {
-                id: Date.now(),
-                title,
-                category,
-                tags,
-                description,
-                body,
-                createTime: new Date().toLocaleString('zh-CN'),
-                updateTime: new Date().toLocaleString('zh-CN')
-            };
-            
-            contentData.unshift(content);
-            localStorage.setItem('kyoko_content_data', JSON.stringify(contentData));
-            
-            toggleContentForm();
-            renderContentList();
-            updateCategoryCounts();
-            
-            alert('内容保存成功！');
-        }
-
-        function renderContentList() {
-            const container = document.getElementById('contentList');
-            
-            if (contentData.length === 0) {
-                container.innerHTML = '<div style="text-align: center; color: #666; padding: 2rem;">暂无内容，点击上方按钮开始创建吧！</div>';
-                return;
-            }
-            
-            const html = contentData.map(content => `
-                <div class="content-item" style="background: #f8f9fa; border-radius: 10px; padding: 1.5rem; margin-bottom: 1rem; border-left: 4px solid #ff9a9e;">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-                        <h3 style="margin: 0; color: #2c3e50; font-size: 1.2rem;">${content.title}</h3>
-                        <div style="display: flex; gap: 0.5rem;">
-                            <button onclick="editContent(${content.id})" style="background: #28a745; color: white; border: none; padding: 0.3rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">编辑</button>
-                            <button onclick="deleteContent(${content.id})" style="background: #dc3545; color: white; border: none; padding: 0.3rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">删除</button>
+                    <!-- 3D渲染引擎 -->
+                    <div class="project-card">
+                        <img src="images/image3.jpg" alt="3D渲染引擎项目截图" class="project-image" onerror="this.src='https://via.placeholder.com/400x220/764ba2/ffffff?text=3D+Engine'">
+                        <div class="project-content">
+                            <h3 class="project-title">🎨 3D渲染引擎</h3>
+                            <p class="project-description">
+                                基于WebGL开发的实时3D渲染引擎，支持PBR材质、阴影映射和后处理效果。实现了高效的场景管理和光照计算系统。
+                            </p>
+                            <div class="tech-stack">
+                                <span class="tech-tag">WebGL</span>
+                                <span class="tech-tag">GLSL</span>
+                                <span class="tech-tag">Three.js</span>
+                                <span class="tech-tag">C++</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="#" class="btn btn-primary">在线演示</a>
+                                <a href="#" class="btn btn-secondary">源码分析</a>
+                            </div>
                         </div>
                     </div>
-                    <div style="margin-bottom: 1rem;">
-                        <span style="background: linear-gradient(45deg, #ff9a9e, #a8c8ec); color: white; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.8rem; margin-right: 0.5rem;">${getCategoryName(content.category)}</span>
-                        ${content.tags.map(tag => `<span style="background: white; color: #495057; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.8rem; margin-right: 0.5rem; border: 1px solid #e9ecef;">${tag}</span>`).join('')}
-                    </div>
-                    <p style="color: #666; margin-bottom: 1rem; line-height: 1.6;">${content.description}</p>
-                    <div style="font-size: 0.8rem; color: #999;">
-                        创建时间: ${content.createTime} | 更新时间: ${content.updateTime}
+
+                    <!-- RoboMaster -->
+                    <div class="project-card">
+                        <img src="images/image1.jpg" alt="RoboMaster项目" class="project-image" onerror="this.src='https://via.placeholder.com/400x220/667eea/ffffff?text=RoboMaster'">
+                        <div class="project-content">
+                            <h3 class="project-title">🤖 RoboMaster</h3>
+                            <p class="project-description">
+                                视觉算法的开发以及仓库的维护。负责机器人视觉识别系统，实现目标检测、跟踪和自动瞄准功能。
+                            </p>
+                            <div class="tech-stack">
+                                <span class="tech-tag">TensorFlow</span>
+                                <span class="tech-tag">PyTorch</span>
+                                <span class="tech-tag">Docker</span>
+                                <span class="tech-tag">C++</span>
+                                <span class="tech-tag">ROS2</span>
+                                <span class="tech-tag">OpenCV</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="#" class="btn btn-primary">项目经历</a>
+                                <a href="#" class="btn btn-secondary">GitHub</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            `).join('');
-            
-            container.innerHTML = html;
-        }
+            </section>
 
-        function getCategoryName(category) {
-            const categoryMap = {
-                'academic': '学术笔记',
-                'project': '项目作品',
-                'tutorial': '教程分享',
-                'thoughts': '思考随笔',
-                'resources': '资源收集'
-            };
-            return categoryMap[category] || category;
-        }
-
-        function updateCategoryCounts() {
-            const counts = {};
-            contentData.forEach(content => {
-                counts[content.category] = (counts[content.category] || 0) + 1;
-            });
-            
-            // 更新分类计数显示
-            document.querySelectorAll('.category-item-count').forEach(counter => {
-                const item = counter.closest('.category-item');
-                const category = item.dataset.category;
-                const count = counts[category] || 0;
-                counter.textContent = count;
-            });
-        }
-
-        function editContent(id) {
-            const content = contentData.find(item => item.id === id);
-            if (!content) return;
-            
-            document.getElementById('contentTitle').value = content.title;
-            document.getElementById('contentCategory').value = content.category;
-            document.getElementById('contentTags').value = content.tags.join(', ');
-            document.getElementById('contentDescription').value = content.description;
-            document.getElementById('contentBody').value = content.body;
-            
-            // 删除原内容
-            contentData = contentData.filter(item => item.id !== id);
-            
-            toggleContentForm();
-        }
-
-        function deleteContent(id) {
-            if (confirm('确定要删除这个内容吗？')) {
-                contentData = contentData.filter(item => item.id !== id);
-                localStorage.setItem('kyoko_content_data', JSON.stringify(contentData));
-                renderContentList();
-                updateCategoryCounts();
-            }
-        }
-
-        // ===== 增强导航功能 =====
-        
-        // 滚动进度条
-        function updateScrollProgress() {
-            const scrolled = window.pageYOffset;
-            const maxHeight = document.documentElement.scrollHeight - window.innerHeight;
-            const progress = (scrolled / maxHeight) * 100;
-            document.getElementById('scrollProgress').style.width = progress + '%';
-        }
-
-        // 面包屑导航
-        function updateBreadcrumb() {
-            const sections = document.querySelectorAll('[id]');
-            const scrollPos = window.pageYOffset + 200;
-            const breadcrumb = document.getElementById('breadcrumb');
-            
-            let currentSection = '首页';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.offsetHeight;
-                
-                if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
-                    const sectionName = getSectionName(section.id);
-                    if (sectionName !== '首页') {
-                        currentSection = sectionName;
-                    }
-                }
-            });
-            
-            breadcrumb.innerHTML = `
-                <span class="breadcrumb-item">首页</span>
-                ${currentSection !== '首页' ? `<span class="breadcrumb-item active">${currentSection}</span>` : ''}
-            `;
-            
-            if (window.pageYOffset > 100) {
-                breadcrumb.classList.add('visible');
-            } else {
-                breadcrumb.classList.remove('visible');
-            }
-        }
-
-        function getSectionName(id) {
-            const sectionNames = {
-                'home': '首页',
-                'projects': '项目展示',
-                'categories': '内容分类',
-                'skills': '技术栈',
-                'contact': '联系方式'
-            };
-            return sectionNames[id] || '未知';
-        }
-
-        // 快速导航
-        function updateQuickNav() {
-            const sections = document.querySelectorAll('[id]');
-            const scrollPos = window.pageYOffset + 200;
-            const quickNavItems = document.querySelectorAll('.quick-nav-item');
-            const quickNav = document.getElementById('quickNav');
-            
-            // 显示/隐藏快速导航
-            if (window.pageYOffset > 300) {
-                quickNav.classList.add('visible');
-            } else {
-                quickNav.classList.remove('visible');
-            }
-            
-            // 更新活动状态
-            quickNavItems.forEach(item => item.classList.remove('active'));
-            
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.offsetHeight;
-                
-                if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
-                    const activeItem = document.querySelector(`[data-section="${section.id}"]`);
-                    if (activeItem) {
-                        activeItem.classList.add('active');
-                    }
-                }
-            });
-        }
-
-        // 快速导航点击事件
-        function initQuickNav() {
-            document.querySelectorAll('.quick-nav-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    const sectionId = item.dataset.section;
-                    const section = document.getElementById(sectionId);
-                    if (section) {
-                        smoothScrollTo(section);
-                    }
-                });
-            });
-        }
-
-        // 搜索功能
-        function openSearch() {
-            document.getElementById('searchOverlay').classList.add('active');
-            document.getElementById('searchInput').focus();
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeSearch() {
-            document.getElementById('searchOverlay').classList.remove('active');
-            document.getElementById('searchInput').value = '';
-            document.getElementById('searchResults').style.display = 'none';
-            document.body.style.overflow = '';
-        }
-
-        function performSearch(query) {
-            if (query.length < 2) {
-                document.getElementById('searchResults').style.display = 'none';
-                return;
-            }
-            
-            const searchData = [
-                { title: '个人博客网站', type: '项目', content: '响应式的个人博客平台' },
-                { title: '3D渲染引擎', type: '项目', content: 'WebGL开发的实时3D渲染引擎' },
-                { title: 'RoboMaster', type: '项目', content: '视觉算法的开发以及仓库的维护' },
-                { title: '学习笔记', type: '内容', content: '数学，物理，计算机科学等各类学习笔记' },
-                { title: '线性代数', type: '学习', content: '向量、矩阵、特征值等内容' },
-                { title: '计算机网络', type: '学习', content: 'OSI模型、TCP/IP协议等' },
-                { title: '前端开发', type: '技能', content: 'HTML5, CSS3, JavaScript' },
-                { title: '机器人工程', type: '技能', content: 'ROS2, OpenCV, C++' }
-            ];
-            
-            const results = searchData.filter(item => 
-                item.title.toLowerCase().includes(query.toLowerCase()) ||
-                item.content.toLowerCase().includes(query.toLowerCase())
-            );
-            
-            const resultsContainer = document.getElementById('searchResults');
-            if (results.length > 0) {
-                resultsContainer.innerHTML = results.map(result => `
-                    <div class="search-result-item" onclick="selectSearchResult('${result.title}')">
-                        <strong>${result.title}</strong>
-                        <div style="color: #666; font-size: 0.9rem;">${result.content}</div>
-                        <div style="color: #999; font-size: 0.8rem;">${result.type}</div>
+            <!-- 学习笔记区 -->
+            <section id="study-notes">
+                <h2 class="section-title">📚 学习笔记</h2>
+                <div class="expandable-section">
+                    <div class="catalog-header" onclick="toggleMainCatalog(this)">
+                        <h3>📖 完整笔记目录</h3>
+                        <span class="expand-icon">▼</span>
                     </div>
-                `).join('');
-                resultsContainer.style.display = 'block';
-            } else {
-                resultsContainer.innerHTML = '<div class="search-result-item">未找到相关内容</div>';
-                resultsContainer.style.display = 'block';
+                    <div class="catalog-content">
+                        <!-- 线性代数 -->
+                        <div class="catalog-section">
+                            <div class="catalog-section-title" onclick="toggleCatalogSection(this)">
+                                <span>📐 线性代数</span>
+                                <span>▼</span>
+                            </div>
+                            <div class="catalog-items">
+                                <div class="catalog-item" onclick="toggleSubItems(this)">
+                                    <strong>▸ 行列式</strong>
+                                    <div class="catalog-sub-items">
+                                        <div class="catalog-sub-item">• 子式、主子式、顺序主子式</div>
+                                        <div class="catalog-sub-item">
+                                            <a href="./study_note/行列式_余子式.html" style="color: inherit; text-decoration: none;">
+                                                • 余子式、代数余子式
+                                            </a>
+                                        </div>
+                                        <div class="catalog-sub-item">• 逆序数</div>
+                                    </div>
+                                </div>
+                                <div class="catalog-item" onclick="toggleSubItems(this)">
+                                    <strong>▸ 矩阵</strong>
+                                    <div class="catalog-sub-items">
+                                        <div class="catalog-sub-item">• 定义与性质</div>
+                                        <div class="catalog-sub-item">• 特征值与特征向量</div>
+                                        <div class="catalog-sub-item">• 相似对角化</div>
+                                    </div>
+                                </div>
+                                <div class="catalog-item" onclick="toggleSubItems(this)">
+                                    <strong>▸ 向量组</strong>
+                                    <div class="catalog-sub-items">
+                                        <div class="catalog-sub-item">• 线性相关与无关</div>
+                                        <div class="catalog-sub-item">• 线性表示</div>
+                                        <div class="catalog-sub-item">• 极大线性无关组</div>
+                                    </div>
+                                </div>
+                                <div class="catalog-item">线性空间</div>
+                                <div class="catalog-item">内积与正交</div>
+                            </div>
+                        </div>
+
+                        <!-- 高等数学 -->
+                        <div class="catalog-section">
+                            <div class="catalog-section-title" onclick="toggleCatalogSection(this)">
+                                <span>📈 高等数学</span>
+                                <span>▼</span>
+                            </div>
+                            <div class="catalog-items">
+                                <div class="catalog-item">三角函数与反三角函数</div>
+                                <div class="catalog-item" onclick="toggleSubItems(this)">
+                                    <strong>▸ 函数</strong>
+                                    <div class="catalog-sub-items">
+                                        <div class="catalog-sub-item">• 函数性态</div>
+                                        <div class="catalog-sub-item">• 函数的连续性</div>
+                                        <div class="catalog-sub-item">• 映射的分类</div>
+                                    </div>
+                                </div>
+                                <div class="catalog-item" onclick="toggleSubItems(this)">
+                                    <strong>▸ 极限</strong>
+                                    <div class="catalog-sub-items">
+                                        <div class="catalog-sub-item">• 函数极限的定义</div>
+                                        <div class="catalog-sub-item">• 等价无穷小</div>
+                                        <div class="catalog-sub-item">• 重要极限及推论</div>
+                                        <div class="catalog-sub-item">• 夹逼定理</div>
+                                    </div>
+                                </div>
+                                <div class="catalog-item" onclick="toggleSubItems(this)">
+                                    <strong>▸ 导数与微分</strong>
+                                    <div class="catalog-sub-items">
+                                        <div class="catalog-sub-item">• 可导与连续性</div>
+                                        <div class="catalog-sub-item">• 微分中值定理</div>
+                                        <div class="catalog-sub-item">• 泰勒公式</div>
+                                        <div class="catalog-sub-item">• 洛必达法则</div>
+                                    </div>
+                                </div>
+                                <div class="catalog-item" onclick="toggleSubItems(this)">
+                                    <strong>▸ 积分</strong>
+                                    <div class="catalog-sub-items">
+                                        <div class="catalog-sub-item">• 不定积分</div>
+                                        <div class="catalog-sub-item">• 定积分</div>
+                                        <div class="catalog-sub-item">• 反常积分</div>
+                                        <div class="catalog-sub-item">• 积分应用</div>
+                                    </div>
+                                </div>
+                                <div class="catalog-item">微分方程</div>
+                                <div class="catalog-item">空间解析几何</div>
+                            </div>
+                        </div>
+
+                        <!-- 概率论 -->
+                        <div class="catalog-section">
+                            <div class="catalog-section-title" onclick="toggleCatalogSection(this)">
+                                <span>🎲 概率论与数理统计</span>
+                                <span>▼</span>
+                            </div>
+                            <div class="catalog-items">
+                                <div class="catalog-item">随机事件与概率</div>
+                                <div class="catalog-item">随机变量及其分布</div>
+                                <div class="catalog-item">多维随机变量</div>
+                                <div class="catalog-item">数字特征</div>
+                                <div class="catalog-item">大数定律与中心极限定理</div>
+                            </div>
+                        </div>
+
+                        <!-- 大学物理 -->
+                        <div class="catalog-section">
+                            <div class="catalog-section-title" onclick="toggleCatalogSection(this)">
+                                <span>⚛️ 大学物理</span>
+                                <span>▼</span>
+                            </div>
+                            <div class="catalog-items">
+                                <div class="catalog-item">力学</div>
+                                <div class="catalog-item">热学</div>
+                                <div class="catalog-item">电磁学</div>
+                                <div class="catalog-item">光学</div>
+                                <div class="catalog-item">近代物理</div>
+                            </div>
+                        </div>
+
+                        <!-- 计算机科学 -->
+                        <div class="catalog-section">
+                            <div class="catalog-section-title" onclick="toggleCatalogSection(this)">
+                                <span>💻 计算机科学</span>
+                                <span>▼</span>
+                            </div>
+                            <div class="catalog-items">
+                                <div class="catalog-item">数据结构与算法</div>
+                                <div class="catalog-item">操作系统</div>
+                                <div class="catalog-item">计算机网络</div>
+                                <div class="catalog-item">数据库系统</div>
+                                <div class="catalog-item">编译原理</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 内容分类区 -->
+            <section id="categories">
+                <h2 class="section-title">🗂️ 内容分类管理</h2>
+                <div class="categories-grid">
+                    <div class="category-card">
+                        <div class="category-icon">📝</div>
+                        <h3 class="category-title">学术笔记</h3>
+                        <p class="category-desc">数学、物理、计算机等学科的系统化学习笔记</p>
+                        <span class="category-count">0 篇</span>
+                    </div>
+
+                    <div class="category-card">
+                        <div class="category-icon">🚀</div>
+                        <h3 class="category-title">项目作品</h3>
+                        <p class="category-desc">个人开发的完整项目与技术实践</p>
+                        <span class="category-count">4个</span>
+                    </div>
+
+                    <div class="category-card">
+                        <div class="category-icon">📚</div>
+                        <h3 class="category-title">教程分享</h3>
+                        <p class="category-desc">技术教程、经验总结与最佳实践</p>
+                        <span class="category-count">0 篇</span>
+                    </div>
+
+                    <div class="category-card">
+                        <div class="category-icon">💭</div>
+                        <h3 class="category-title">思考随笔</h3>
+                        <p class="category-desc">技术思考、学习心得与职业规划</p>
+                        <span class="category-count">0 篇</span>
+                    </div>
+
+                    <div class="category-card">
+                        <div class="category-icon">🔖</div>
+                        <h3 class="category-title">资源收集</h3>
+                        <p class="category-desc">优质学习资源、工具推荐与文档整理</p>
+                        <span class="category-count">0 项</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 技术栈区 -->
+            <section id="skills">
+                <h2 class="section-title">💻 技术栈</h2>
+                <div class="skills-cloud">
+                    <div class="skill-category">
+                        <h3>🎨 前端开发</h3>
+                        <div class="skill-tags">
+                            <span class="skill-tag">HTML5</span>
+                            <span class="skill-tag">CSS3</span>
+                            <span class="skill-tag">JavaScript</span>
+                            <span class="skill-tag">TypeScript</span>
+                            <span class="skill-tag">Vue.js</span>
+                            <span class="skill-tag">React</span>
+                            <span class="skill-tag">Webpack</span>
+                            <span class="skill-tag">Vite</span>
+                        </div>
+                    </div>
+
+                    <div class="skill-category">
+                        <h3>🤖 机器人工程</h3>
+                        <div class="skill-tags">
+                            <span class="skill-tag">ROS2</span>
+                            <span class="skill-tag">C++</span>
+                            <span class="skill-tag">Python</span>
+                            <span class="skill-tag">OpenCV</span>
+                            <span class="skill-tag">TensorFlow</span>
+                            <span class="skill-tag">PyTorch</span>
+                            <span class="skill-tag">SLAM</span>
+                            <span class="skill-tag">路径规划</span>
+                        </div>
+                    </div>
+
+                    <div class="skill-category">
+                        <h3>🎮 技术美术</h3>
+                        <div class="skill-tags">
+                            <span class="skill-tag">Unity</span>
+                            <span class="skill-tag">Unreal Engine</span>
+                            <span class="skill-tag">Shader</span>
+                            <span class="skill-tag">GLSL</span>
+                            <span class="skill-tag">WebGL</span>
+                            <span class="skill-tag">Three.js</span>
+                            <span class="skill-tag">Blender</span>
+                        </div>
+                    </div>
+
+                    <div class="skill-category">
+                        <h3>🛠️ 工具与平台</h3>
+                        <div class="skill-tags">
+                            <span class="skill-tag">Git</span>
+                            <span class="skill-tag">Docker</span>
+                            <span class="skill-tag">Linux</span>
+                            <span class="skill-tag">VS Code</span>
+                            <span class="skill-tag">Vim</span>
+                            <span class="skill-tag">CMake</span>
+                        </div>
+                    </div>
+
+                    <div class="skill-category">
+                        <h3>📖 正在学习</h3>
+                        <div class="skill-tags">
+                            <span class="skill-tag">Rust</span>
+                            <span class="skill-tag">Go</span>
+                            <span class="skill-tag">Kubernetes</span>
+                            <span class="skill-tag">深度学习</span>
+                            <span class="skill-tag">计算机图形学</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <script>
+            // 主题切换
+            function toggleTheme() {
+                const html = document.documentElement;
+                const currentTheme = html.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                html.setAttribute('data-theme', newTheme);
+                localStorage.setItem('portfolio-theme', newTheme);
             }
-        }
 
-        function selectSearchResult(title) {
-            alert(`您选择了: ${title}`);
-            closeSearch();
-        }
-
-        // 主题切换
-        function toggleTheme() {
-            document.body.classList.toggle('dark-theme');
-            const isDark = document.body.classList.contains('dark-theme');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        }
-
-        // 加载主题设置
-        function loadTheme() {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark-theme');
-            }
-        }
-
-        // 键盘快捷键
-        function initKeyboardShortcuts() {
-            let shortcutsVisible = false;
-            
-            document.addEventListener('keydown', (e) => {
-                // 搜索快捷键 (/)
-                if (e.key === '/' && !e.ctrlKey && !e.metaKey) {
-                    e.preventDefault();
-                    openSearch();
-                }
-                
-                // 关闭快捷键 (Esc)
-                if (e.key === 'Escape') {
-                    closeSearch();
-                    if (navVisible) toggleNav();
-                }
-                
-                // 导航快捷键 (方向键)
-                if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-                    const sections = ['home', 'projects', 'categories', 'skills', 'contact'];
-                    const currentSection = getCurrentSection();
-                    const currentIndex = sections.indexOf(currentSection);
-                    
-                    if (currentIndex !== -1) {
-                        let newIndex;
-                        if (e.key === 'ArrowLeft') {
-                            newIndex = currentIndex > 0 ? currentIndex - 1 : sections.length - 1;
-                        } else {
-                            newIndex = currentIndex < sections.length - 1 ? currentIndex + 1 : 0;
-                        }
-                        
-                        const targetSection = document.getElementById(sections[newIndex]);
-                        if (targetSection) {
-                            smoothScrollTo(targetSection);
-                        }
-                    }
-                }
-                
-                // 显示/隐藏快捷键提示 (?)
-                if (e.key === '?' && !e.shiftKey) {
-                    const shortcuts = document.getElementById('keyboardShortcuts');
-                    shortcutsVisible = !shortcutsVisible;
-                    shortcuts.classList.toggle('visible', shortcutsVisible);
-                    
-                    if (shortcutsVisible) {
-                        setTimeout(() => {
-                            shortcuts.classList.remove('visible');
-                            shortcutsVisible = false;
-                        }, 3000);
-                    }
-                }
-            });
-        }
-
-        function getCurrentSection() {
-            const sections = document.querySelectorAll('[id]');
-            const scrollPos = window.pageYOffset + 200;
-            
-            for (const section of sections) {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.offsetHeight;
-                
-                if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
-                    return section.id;
-                }
-            }
-            return 'home';
-        }
-
-        // 平滑滚动增强
-        function smoothScrollTo(element) {
-            const targetPosition = element.offsetTop - 100;
-            const startPosition = window.pageYOffset;
-            const distance = targetPosition - startPosition;
-            const duration = 1000;
-            let start = null;
-
-            function animation(currentTime) {
-                if (start === null) start = currentTime;
-                const timeElapsed = currentTime - start;
-                const run = easeInOutCubic(timeElapsed, startPosition, distance, duration);
-                window.scrollTo(0, run);
-                if (timeElapsed < duration) requestAnimationFrame(animation);
-            }
-
-            function easeInOutCubic(t, b, c, d) {
-                t /= d / 2;
-                if (t < 1) return c / 2 * t * t * t + b;
-                t -= 2;
-                return c / 2 * (t * t * t + 2) + b;
-            }
-
-            requestAnimationFrame(animation);
-        }
-
-        // 页面加载完成后的初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            // 导航链接点击事件
-            const navLinks = document.querySelectorAll('.nav-link');
-            navLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const targetId = this.getAttribute('href').substring(1);
-                    const targetElement = document.getElementById(targetId);
-                    
-                    if (targetElement) {
-                        smoothScrollTo(targetElement);
-                        
-                        // 移动端自动隐藏菜单
-                        if (window.innerWidth <= 768) {
-                            setTimeout(() => {
-                                toggleNav();
-                            }, 300);
-                        }
-                    }
+            // 返回顶部
+            function scrollToTop() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
                 });
-            });
+            }
 
-            // 滚动事件监听
+            // 显示/隐藏返回顶部按钮
             window.addEventListener('scroll', function() {
-                highlightCurrentNav();
-                toggleBackToTop();
-                updateScrollProgress();
-                updateBreadcrumb();
-                updateQuickNav();
+                const backToTop = document.querySelector('.back-to-top');
+                if (window.scrollY > 300) {
+                    backToTop.classList.add('visible');
+                } else {
+                    backToTop.classList.remove('visible');
+                }
             });
 
-            // 初始化导航高亮
-            highlightCurrentNav();
+            // 切换主目录
+            function toggleMainCatalog(element) {
+                const content = element.nextElementSibling;
+                const icon = element.querySelector('.expand-icon');
+                content.classList.toggle('expanded');
+                icon.classList.toggle('expanded');
+            }
 
-            // 初始化所有增强功能
-            initQuickNav();
-            initKeyboardShortcuts();
-            loadTheme();
+            // 切换目录章节
+            function toggleCatalogSection(element) {
+                const items = element.nextElementSibling;
+                items.classList.toggle('expanded');
+            }
 
-            // 搜索输入事件
-            document.getElementById('searchInput').addEventListener('input', (e) => {
-                performSearch(e.target.value);
-            });
+            // 切换子项目
+            function toggleSubItems(element) {
+                const subItems = element.querySelector('.catalog-sub-items');
+                if (subItems) {
+                    subItems.classList.toggle('expanded');
+                }
+            }
 
-            // 初始化分类内容
-            renderContentList();
-            updateCategoryCounts();
-
-            // 为项目卡片添加点击效果
-            const cards = document.querySelectorAll('.project-card');
-            cards.forEach(card => {
-                card.addEventListener('click', function(e) {
-                    // 如果点击的是展开按钮或子目录区域，不触发卡片点击效果
-                    if (!e.target.closest('.btn') && 
-                        !e.target.closest('.expand-btn') && 
-                        !e.target.closest('.subdirectory')) {
-                        this.style.transform = 'scale(1.02)';
-                        setTimeout(() => {
-                            this.style.transform = '';
-                        }, 200);
+            // 平滑滚动到锚点
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
                     }
                 });
             });
-
-            // 为子目录项添加点击效果
-            const subdirectoryItems = document.querySelectorAll('.subdirectory-item');
-            subdirectoryItems.forEach(item => {
-                item.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    // 这里可以添加跳转到具体笔记页面的逻辑
-                    console.log('点击了:', this.querySelector('.subdirectory-title').textContent);
-                });
-            });
-
-            // 键盘快捷键支持
-            document.addEventListener('keydown', function(e) {
-                // ESC键隐藏导航菜单
-                if (e.key === 'Escape' && navVisible) {
-                    toggleNav();
-                }
-                // Home键回到顶部
-                if (e.key === 'Home') {
-                    e.preventDefault();
-                    scrollToTop();
-                }
-            });
-        });
-    </script>
-</body>
+        </script>
+    </body>
 </html>

@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1"/>
+        <title>代数余子式简介 | Kyoko的学习笔记</title>
+        <style>
+            html {
+                background: var(--bg-color, #fff);
+                scroll-behavior: smooth;
+            }
+
+            html[data-theme="dark"] {
+                background: var(--bg-color, #22272e);
+            }
+
+            body {
+                background: var(--bg-color);
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                line-height: 1.6;
+                color: #2c3e50;
+                margin: 0;
+                padding: 0;
+            }
+
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+
+            /* 头部样式 */
+            header {
+                text-align: center;
+                padding: 60px 20px;
+                background: linear-gradient(135deg, #ff9a9e 0%, #a8c8ec 100%);
+                color: white;
+                border-radius: 15px;
+                margin-bottom: 40px;
+                box-shadow: 0 10px 30px rgba(255, 154, 158, 0.3);
+            }
+
+            h1 {
+                font-size: 2.8rem;
+                margin-bottom: 1rem;
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            }
+
+            .subtitle {
+                font-size: 1.2rem;
+                opacity: 0.95;
+            }
+
+            /* 导航栏 */
+            .nav-bar {
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+                background: white;
+                box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+                padding: 15px 0;
+                margin-bottom: 30px;
+                border-radius: 10px;
+            }
+
+            .nav-links {
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 20px;
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .nav-links a {
+                text-decoration: none;
+                color: #2c3e50;
+                padding: 8px 20px;
+                border-radius: 20px;
+                transition: all 0.3s ease;
+                font-weight: 500;
+            }
+
+            .nav-links a:hover {
+                background: linear-gradient(135deg, #ff9a9e 0%, #a8c8ec 100%);
+                color: white;
+                transform: translateY(-2px);
+            }
+
+            /* 主题切换按钮 */
+            .theme-toggle {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #ff9a9e, #a8c8ec);
+                color: white;
+                border: none;
+                padding: 12px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 24px;
+                box-shadow: 0 4px 15px rgba(255, 154, 158, 0.4);
+                transition: all 0.3s ease;
+                z-index: 1001;
+            }
+
+            .theme-toggle:hover {
+                transform: scale(1.1) rotate(15deg);
+            }
+
+            /* 返回顶部按钮 */
+            .back-to-top {
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                background: linear-gradient(135deg, #ff9a9e, #a8c8ec);
+                color: white;
+                border: none;
+                padding: 15px 18px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 20px;
+                box-shadow: 0 4px 15px rgba(255, 154, 158, 0.4);
+                transition: all 0.3s ease;
+                opacity: 0;
+                visibility: hidden;
+                z-index: 1000;
+            }
+
+            .back-to-top.visible {
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .back-to-top:hover {
+                transform: translateY(-5px);
+            }
+
+            /* 内容区域 */
+            .content-section {
+                background: white;
+                border-radius: 15px;
+                padding: 40px;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+                margin-bottom: 30px;
+            }
+
+            /* 章节标题 */
+            .section-title {
+                font-size: 2.2rem;
+                color: #ff9a9e;
+                margin: 40px 0 25px;
+                padding-bottom: 15px;
+                border-bottom: 3px solid #ff9a9e;
+                position: relative;
+            }
+
+            .section-title::before {
+                content: '';
+                position: absolute;
+                bottom: -3px;
+                left: 0;
+                width: 80px;
+                height: 3px;
+                background: #a8c8ec;
+            }
+
+            /* 子标题 */
+            h3 {
+                color: #2c3e50;
+                font-size: 1.5rem;
+                margin: 30px 0 15px;
+                padding-left: 15px;
+                border-left: 4px solid #ff9a9e;
+            }
+
+            h4 {
+                color: #2c3e50;
+                font-size: 1.2rem;
+                margin: 25px 0 10px;
+                color: #a8c8ec;
+            }
+
+            /* 数学公式容器 */
+            .math-block {
+                background: linear-gradient(135deg, #ff9a9e08, #a8c8ec08);
+                border: 2px solid #ff9a9e20;
+                border-radius: 10px;
+                padding: 20px;
+                margin: 20px 0;
+                text-align: center;
+                font-size: 1.1rem;
+            }
+
+            /* 示例框 */
+            .example-box {
+                background: linear-gradient(135deg, #ff9a9e05, #a8c8ec05);
+                border: 2px solid #ff9a9e30;
+                border-radius: 12px;
+                padding: 25px;
+                margin: 25px 0;
+                border-left: 5px solid #ff9a9e;
+            }
+
+            .example-title {
+                color: #ff9a9e;
+                font-weight: 600;
+                font-size: 1.1rem;
+                margin-bottom: 15px;
+                display: flex;
+                align-items: center;
+            }
+
+            .example-title::before {
+                content: "💡";
+                margin-right: 8px;
+            }
+
+            /* 步骤列表 */
+            .steps-list {
+                background: white;
+                border-radius: 10px;
+                padding: 20px;
+                margin: 20px 0;
+                box-shadow: 0 3px 15px rgba(0,0,0,0.05);
+            }
+
+            .steps-list ol {
+                padding-left: 20px;
+            }
+
+            .steps-list li {
+                margin-bottom: 10px;
+                padding: 8px;
+                border-radius: 5px;
+                transition: all 0.3s ease;
+            }
+
+            .steps-list li:hover {
+                background: linear-gradient(135deg, #ff9a9e08, #a8c8ec08);
+                transform: translateX(5px);
+            }
+
+            /* 练习题区域 */
+            .exercise-section {
+                background: linear-gradient(135deg, #ff9a9e10, #a8c8ec10);
+                border-radius: 15px;
+                padding: 30px;
+                margin: 30px 0;
+            }
+
+            .exercise-title {
+                color: #ff9a9e;
+                font-size: 1.3rem;
+                margin-bottom: 20px;
+                font-weight: 600;
+            }
+
+            .exercise-item {
+                background: white;
+                border-radius: 10px;
+                padding: 20px;
+                margin: 15px 0;
+                box-shadow: 0 3px 15px rgba(0,0,0,0.05);
+                transition: all 0.3s ease;
+            }
+
+            .exercise-item:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 25px rgba(255, 154, 158, 0.2);
+            }
+
+            /* 重点提示框 */
+            .highlight-box {
+                background: linear-gradient(135deg, #ff9a9e15, #a8c8ec15);
+                border: 2px solid #ff9a9e40;
+                border-radius: 12px;
+                padding: 20px;
+                margin: 25px 0;
+                position: relative;
+            }
+
+            .highlight-box::before {
+                content: "⚡";
+                position: absolute;
+                top: -10px;
+                left: 20px;
+                background: white;
+                padding: 5px 10px;
+                border-radius: 50%;
+                font-size: 1.2rem;
+            }
+
+            /* 相关链接区域 */
+            .related-links {
+                background: white;
+                border-radius: 15px;
+                padding: 30px;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+                margin-top: 40px;
+            }
+
+            .related-links h3 {
+                color: #ff9a9e;
+                margin-bottom: 20px;
+                border-left: none;
+                padding-left: 0;
+            }
+
+            .link-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 15px;
+            }
+
+            .link-item {
+                background: linear-gradient(135deg, #ff9a9e08, #a8c8ec08);
+                padding: 15px 20px;
+                border-radius: 10px;
+                text-decoration: none;
+                color: #2c3e50;
+                transition: all 0.3s ease;
+                border: 2px solid transparent;
+            }
+
+            .link-item:hover {
+                background: linear-gradient(135deg, #ff9a9e20, #a8c8ec20);
+                transform: translateY(-2px);
+                border-color: #ff9a9e30;
+            }
+
+            /* 深色模式 */
+            html[data-theme="dark"] body {
+                color: #adbac7;
+            }
+
+            html[data-theme="dark"] .nav-bar,
+            html[data-theme="dark"] .content-section,
+            html[data-theme="dark"] .related-links {
+                background: #2d333b;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            }
+
+            html[data-theme="dark"] .section-title,
+            html[data-theme="dark"] h3,
+            html[data-theme="dark"] h4 {
+                color: #adbac7;
+            }
+
+            html[data-theme="dark"] .nav-links a {
+                color: #adbac7;
+            }
+
+            html[data-theme="dark"] .steps-list,
+            html[data-theme="dark"] .exercise-item {
+                background: #22272e;
+            }
+
+            html[data-theme="dark"] .link-item {
+                color: #adbac7;
+            }
+
+            /* 响应式设计 */
+            @media (max-width: 768px) {
+                .container {
+                    padding: 10px;
+                }
+
+                h1 {
+                    font-size: 2.2rem;
+                }
+
+                .section-title {
+                    font-size: 1.8rem;
+                }
+
+                .content-section {
+                    padding: 25px;
+                }
+            }
+        </style>
+        <script>
+            // MathJax 配置
+            window.MathJax = {
+                tex: {
+                    inlineMath: [['$', '$'], ['\\(', '\\)']],
+                    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                    processEscapes: true,
+                    processEnvironments: true
+                },
+                options: {
+                    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+                }
+            };
+        </script>
+        <script async src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>
+            const userMode = localStorage.getItem("portfolio-theme");
+            const systemDarkMode = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+            if (userMode === "dark" || (userMode !== "light" && systemDarkMode)) {
+                document.documentElement.setAttribute("data-theme", "dark");
+            }
+        </script>
+    </head>
+    <body>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="切换主题">🌓</button>
+        <button class="back-to-top" onclick="scrollToTop()" aria-label="返回顶部">↑</button>
+
+        <div class="container">
+            <header id="top">
+                <h1>代数余子式简介</h1>
+                <p class="subtitle">线性代数核心概念 | 详细讲解与实例</p>
+            </header>
+
+            <!-- 导航栏 -->
+            <nav class="nav-bar">
+                <ul class="nav-links">
+                    <li><a href="#basic-concepts">📚 基本概念</a></li>
+                    <li><a href="#definitions">📝 定义与记号</a></li>
+                    <li><a href="#calculation">⚙️ 计算方法</a></li>
+                    <li><a href="#properties">🔍 性质与定理</a></li>
+                    <li><a href="#applications">💡 应用实例</a></li>
+                </ul>
+            </nav>
+
+            <!-- 基本概念 -->
+            <section id="basic-concepts" class="content-section">
+                <h2 class="section-title">📚 基本概念</h2>
+                
+                <h3>什么是代数余子式？</h3>
+                <p><strong>代数余子式</strong>（Algebraic Cofactor）是线性代数中的一个重要概念，它是计算行列式、求逆矩阵和解线性方程组的基础工具。</p>
+                
+                <p>对于 $n \times n$ 矩阵 $A = (a_{ij})$，元素 $a_{ij}$ 的代数余子式定义为：</p>
+                
+                <div class="math-block">
+                    $$A_{ij} = (-1)^{i+j} M_{ij}$$
+                </div>
+                
+                <div class="highlight-box">
+                    <p><strong>其中：</strong></p>
+                    <ul>
+                        <li>$M_{ij}$ 是元素 $a_{ij}$ 的<strong>余子式</strong>（Minor）</li>
+                        <li>$(-1)^{i+j}$ 是<strong>符号因子</strong></li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 定义与记号 -->
+            <section id="definitions" class="content-section">
+                <h2 class="section-title">📝 定义与记号</h2>
+                
+                <h3>余子式 (Minor)</h3>
+                <p>对于 $n \times n$ 矩阵 $A$，元素 $a_{ij}$ 的余子式 $M_{ij}$ 是从矩阵 $A$ 中删除第 $i$ 行和第 $j$ 列后得到的 $(n-1) \times (n-1)$ 子矩阵的行列式。</p>
+                
+                <h3>符号模式</h3>
+                <p>符号因子 $(-1)^{i+j}$ 在矩阵中的分布模式为：</p>
+                
+                <h4>对于 $3 \times 3$ 矩阵：</h4>
+                <div class="math-block">
+                    $$\begin{pmatrix}
+                    + & - & + \\
+                    - & + & - \\
+                    + & - & +
+                    \end{pmatrix}$$
+                </div>
+                
+                <h4>对于 $4 \times 4$ 矩阵：</h4>
+                <div class="math-block">
+                    $$\begin{pmatrix}
+                    + & - & + & - \\
+                    - & + & - & + \\
+                    + & - & + & - \\
+                    - & + & - & +
+                    \end{pmatrix}$$
+                </div>
+            </section>
+
+            <!-- 计算方法 -->
+            <section id="calculation" class="content-section">
+                <h2 class="section-title">⚙️ 计算方法</h2>
+                
+                <h3>步骤详解</h3>
+                <div class="steps-list">
+                    <ol>
+                        <li><strong>确定位置</strong>：找到要计算代数余子式的元素位置 $(i,j)$</li>
+                        <li><strong>删除行列</strong>：从矩阵中删除第 $i$ 行和第 $j$ 列</li>
+                        <li><strong>计算余子式</strong>：计算剩余子矩阵的行列式</li>
+                        <li><strong>应用符号</strong>：乘以符号因子 $(-1)^{i+j}$</li>
+                    </ol>
+                </div>
+                
+                <h3>示例计算</h3>
+                <div class="example-box">
+                    <div class="example-title">示例矩阵</div>
+                    <p>考虑矩阵：</p>
+                    <div class="math-block">
+                        $$A = \begin{pmatrix}
+                        1 & 2 & 3 \\
+                        4 & 5 & 6 \\
+                        7 & 8 & 9
+                        \end{pmatrix}$$
+                    </div>
+                    
+                    <h4>计算 $A_{11}$：</h4>
+                    <ul>
+                        <li>删除第1行第1列：$\begin{pmatrix} 5 & 6 \\ 8 & 9 \end{pmatrix}$</li>
+                        <li>$M_{11} = 5 \times 9 - 6 \times 8 = 45 - 48 = -3$</li>
+                        <li>$A_{11} = (-1)^{1+1} \times (-3) = 1 \times (-3) = -3$</li>
+                    </ul>
+                    
+                    <h4>计算 $A_{12}$：</h4>
+                    <ul>
+                        <li>删除第1行第2列：$\begin{pmatrix} 4 & 6 \\ 7 & 9 \end{pmatrix}$</li>
+                        <li>$M_{12} = 4 \times 9 - 6 \times 7 = 36 - 42 = -6$</li>
+                        <li>$A_{12} = (-1)^{1+2} \times (-6) = -1 \times (-6) = 6$</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 性质与定理 -->
+            <section id="properties" class="content-section">
+                <h2 class="section-title">🔍 性质与定理</h2>
+                
+                <h3>基本性质</h3>
+                
+                <div class="highlight-box">
+                    <h4>1. 行列式展开公式：</h4>
+                    <div class="math-block">
+                        $$\det(A) = \sum_{j=1}^{n} a_{ij} A_{ij} = \sum_{i=1}^{n} a_{ij} A_{ij}$$
+                    </div>
+                    
+                    <h4>2. 正交性质：</h4>
+                    <div class="math-block">
+                        $$\sum_{k=1}^{n} a_{ik} A_{jk} = \delta_{ij} \det(A)$$
+                    </div>
+                    <p>其中 $\delta_{ij}$ 是克罗内克符号。</p>
+                    
+                    <h4>3. 转置关系：</h4>
+                    <div class="math-block">
+                        $$(A^T)_{ij} = A_{ji}$$
+                    </div>
+                </div>
+                
+                <h3>重要定理</h3>
+                <div class="example-box">
+                    <div class="example-title">拉普拉斯展开定理</div>
+                    <p>行列式可以按任意一行或一列展开：</p>
+                    <ul>
+                        <li>按第 $i$ 行展开：$\det(A) = \sum_{j=1}^{n} a_{ij} A_{ij}$</li>
+                        <li>按第 $j$ 列展开：$\det(A) = \sum_{i=1}^{n} a_{ij} A_{ij}$</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 应用实例 -->
+            <section id="applications" class="content-section">
+                <h2 class="section-title">💡 应用实例</h2>
+                
+                <h3>1. 计算行列式</h3>
+                <div class="example-box">
+                    <div class="example-title">使用第一行展开计算</div>
+                    <div class="math-block">
+                        $$A = \begin{pmatrix}
+                        2 & 1 & 3 \\
+                        0 & 4 & 1 \\
+                        1 & 2 & 2
+                        \end{pmatrix}$$
+                    </div>
+                    
+                    <div class="math-block">
+                        $$\det(A) = 2A_{11} + 1A_{12} + 3A_{13}$$
+                    </div>
+                    
+                    <p>计算各代数余子式：</p>
+                    <ul>
+                        <li>$A_{11} = +\begin{vmatrix} 4 & 1 \\ 2 & 2 \end{vmatrix} = 4 \times 2 - 1 \times 2 = 6$</li>
+                        <li>$A_{12} = -\begin{vmatrix} 0 & 1 \\ 1 & 2 \end{vmatrix} = -(0 \times 2 - 1 \times 1) = 1$</li>
+                        <li>$A_{13} = +\begin{vmatrix} 0 & 4 \\ 1 & 2 \end{vmatrix} = 0 \times 2 - 4 \times 1 = -4$</li>
+                    </ul>
+                    
+                    <p>因此：$\det(A) = 2 \times 6 + 1 \times 1 + 3 \times (-4) = 12 + 1 - 12 = 1$</p>
+                </div>
+                
+                <h3>2. 求逆矩阵</h3>
+                <div class="highlight-box">
+                    <p>矩阵的逆可以通过代数余子式表示：</p>
+                    <div class="math-block">
+                        $$A^{-1} = \frac{1}{\det(A)} \text{adj}(A)$$
+                    </div>
+                    <p>其中伴随矩阵 $\text{adj}(A) = (A_{ji})^T$</p>
+                </div>
+            </section>
+
+            <!-- 相关主题 -->
+            <div class="related-links">
+                <h3>📖 相关主题</h3>
+                <div class="link-grid">
+                    <a href="./行列式.html" class="link-item">
+                        📊 行列式的性质与计算
+                    </a>
+                    <a href="./逆矩阵.html" class="link-item">
+                        🔄 矩阵的逆
+                    </a>
+                    <a href="./线性方程组.html" class="link-item">
+                        📐 线性方程组
+                    </a>
+                    <a href="./克拉默法则.html" class="link-item">
+                        📏 克拉默法则
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // 主题切换
+            function toggleTheme() {
+                const html = document.documentElement;
+                const currentTheme = html.getAttribute("data-theme");
+                const newTheme = currentTheme === "dark" ? "light" : "dark";
+                html.setAttribute("data-theme", newTheme);
+                localStorage.setItem("portfolio-theme", newTheme);
+            }
+
+            // 返回顶部
+            function scrollToTop() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
+
+            // 显示/隐藏返回顶部按钮
+            window.addEventListener('scroll', function() {
+                const backToTop = document.querySelector('.back-to-top');
+                if (window.pageYOffset > 300) {
+                    backToTop.classList.add('visible');
+                } else {
+                    backToTop.classList.remove('visible');
+                }
+            });
+
+            // 平滑滚动到锚点
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>
