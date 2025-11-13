@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Bash 基础命令 | Kyoko的学习笔记</title>
+        <style>
+            html {
+                background: var(--bg-color, #fff);
+                scroll-behavior: smooth;
+            }
+
+            html[data-theme="dark"] {
+                background: var(--bg-color, #22272e);
+            }
+
+            body {
+                background: var(--bg-color);
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                line-height: 1.6;
+                color: #2c3e50;
+                margin: 0;
+                padding: 0;
+            }
+
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+
+            /* 头部样式 */
+            header {
+                text-align: center;
+                padding: 60px 20px;
+                background: linear-gradient(135deg, #ff9a9e 0%, #a8c8ec 100%);
+                color: white;
+                border-radius: 15px;
+                margin-bottom: 40px;
+                box-shadow: 0 10px 30px rgba(255, 154, 158, 0.3);
+            }
+
+            h1 {
+                font-size: 2.8rem;
+                margin-bottom: 1rem;
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            }
+
+            .subtitle {
+                font-size: 1.2rem;
+                opacity: 0.95;
+            }
+
+            /* 导航栏 */
+            .nav-bar {
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+                background: white;
+                box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+                padding: 15px 0;
+                margin-bottom: 30px;
+                border-radius: 10px;
+            }
+
+            .nav-links {
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 20px;
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .nav-links a {
+                text-decoration: none;
+                color: #2c3e50;
+                padding: 8px 20px;
+                border-radius: 20px;
+                transition: all 0.3s ease;
+                font-weight: 500;
+            }
+
+            .nav-links a:hover {
+                background: linear-gradient(135deg, #ff9a9e 0%, #a8c8ec 100%);
+                color: white;
+                transform: translateY(-2px);
+            }
+
+            /* 主题切换按钮 */
+            .theme-toggle {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #ff9a9e, #a8c8ec);
+                color: white;
+                border: none;
+                padding: 12px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 24px;
+                box-shadow: 0 4px 15px rgba(255, 154, 158, 0.4);
+                transition: all 0.3s ease;
+                z-index: 1001;
+            }
+
+            .theme-toggle:hover {
+                transform: scale(1.1) rotate(15deg);
+            }
+
+            /* 返回顶部按钮 */
+            .back-to-top {
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                background: linear-gradient(135deg, #ff9a9e, #a8c8ec);
+                color: white;
+                border: none;
+                padding: 15px 18px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 20px;
+                box-shadow: 0 4px 15px rgba(255, 154, 158, 0.4);
+                transition: all 0.3s ease;
+                opacity: 0;
+                visibility: hidden;
+                z-index: 1000;
+            }
+
+            .back-to-top.visible {
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .back-to-top:hover {
+                transform: translateY(-5px);
+            }
+
+            /* 返回Origin按钮 */
+            .back-to-origin {
+                position: fixed;
+                bottom: 90px;
+                right: 30px;
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                color: white;
+                border: none;
+                padding: 12px 16px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 18px;
+                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+                transition: all 0.3s ease;
+                z-index: 1000;
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 50px;
+                min-height: 50px;
+            }
+
+            .back-to-origin:hover {
+                transform: translateY(-3px) scale(1.05);
+                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+                text-decoration: none;
+                color: white;
+            }
+
+            /* 语言切换按钮 */
+            .lang-toggle {
+                position: fixed;
+                bottom: 150px;
+                right: 30px;
+                background: linear-gradient(135deg, #f093fb, #f5576c);
+                color: white;
+                border: none;
+                padding: 12px 16px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 16px;
+                box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+                transition: all 0.3s ease;
+                z-index: 1000;
+                min-width: 50px;
+                min-height: 50px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+            }
+
+            .lang-toggle:hover {
+                transform: translateY(-3px) scale(1.05);
+                box-shadow: 0 6px 20px rgba(245, 87, 108, 0.5);
+            }
+
+            /* 内容区域 */
+            .content-section {
+                background: white;
+                border-radius: 15px;
+                padding: 40px;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+                margin-bottom: 30px;
+            }
+
+            /* Markdown 内容样式 */
+            .markdown-content {
+                line-height: 1.8;
+            }
+
+            .markdown-content h2 {
+                color: #2c3e50;
+                font-size: 2rem;
+                margin-top: 40px;
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid #ff9a9e;
+            }
+
+            .markdown-content h3 {
+                color: #2c3e50;
+                font-size: 1.5rem;
+                margin-top: 30px;
+                margin-bottom: 15px;
+                padding-left: 15px;
+                border-left: 4px solid #ff9a9e;
+            }
+
+            .markdown-content h4 {
+                color: #667eea;
+                font-size: 1.2rem;
+                margin-top: 25px;
+                margin-bottom: 10px;
+            }
+
+            .markdown-content p {
+                margin: 15px 0;
+            }
+
+            .markdown-content code {
+                background: linear-gradient(135deg, #ff9a9e08, #a8c8ec08);
+                padding: 2px 6px;
+                border-radius: 4px;
+                font-family: 'Courier New', Courier, monospace;
+                font-size: 0.9em;
+                color: #e83e8c;
+            }
+
+            .markdown-content pre {
+                background: #f6f8fa;
+                border: 1px solid #e1e4e8;
+                border-radius: 8px;
+                padding: 16px;
+                overflow-x: auto;
+                margin: 20px 0;
+            }
+
+            .markdown-content pre code {
+                background: none;
+                padding: 0;
+                color: #24292e;
+                font-size: 0.95em;
+                line-height: 1.6;
+            }
+
+            .markdown-content ul,
+            .markdown-content ol {
+                margin: 15px 0;
+                padding-left: 30px;
+            }
+
+            .markdown-content li {
+                margin: 8px 0;
+            }
+
+            .markdown-content blockquote {
+                border-left: 4px solid #ff9a9e;
+                padding-left: 20px;
+                margin: 20px 0;
+                color: #666;
+                font-style: italic;
+            }
+
+            .markdown-content table {
+                border-collapse: collapse;
+                width: 100%;
+                margin: 20px 0;
+            }
+
+            .markdown-content table th,
+            .markdown-content table td {
+                border: 1px solid #e1e4e8;
+                padding: 10px;
+                text-align: left;
+            }
+
+            .markdown-content table th {
+                background: linear-gradient(135deg, #ff9a9e20, #a8c8ec20);
+                font-weight: 600;
+            }
+
+            .markdown-content a {
+                color: #667eea;
+                text-decoration: none;
+                transition: color 0.3s ease;
+            }
+
+            .markdown-content a:hover {
+                color: #ff9a9e;
+                text-decoration: underline;
+            }
+
+            /* 深色模式 */
+            html[data-theme="dark"] body {
+                color: #adbac7;
+            }
+
+            html[data-theme="dark"] .nav-bar,
+            html[data-theme="dark"] .content-section {
+                background: #2d333b;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            }
+
+            html[data-theme="dark"] h1,
+            html[data-theme="dark"] h2,
+            html[data-theme="dark"] h3 {
+                color: #adbac7;
+            }
+
+            html[data-theme="dark"] .nav-links a {
+                color: #adbac7;
+            }
+
+            html[data-theme="dark"] .back-to-origin {
+                background: linear-gradient(135deg, #5568d3, #6a3f91);
+            }
+
+            html[data-theme="dark"] .back-to-origin:hover {
+                background: linear-gradient(135deg, #4a5bc4, #5f3682);
+            }
+
+            html[data-theme="dark"] .markdown-content h2,
+            html[data-theme="dark"] .markdown-content h3,
+            html[data-theme="dark"] .markdown-content h4 {
+                color: #adbac7;
+            }
+
+            html[data-theme="dark"] .markdown-content code {
+                background: rgba(110, 118, 129, 0.2);
+                color: #ff9a9e;
+            }
+
+            html[data-theme="dark"] .markdown-content pre {
+                background: #22272e;
+                border-color: #373e47;
+            }
+
+            html[data-theme="dark"] .markdown-content pre code {
+                color: #adbac7;
+            }
+
+            html[data-theme="dark"] .markdown-content table th {
+                background: rgba(102, 126, 234, 0.2);
+            }
+
+            html[data-theme="dark"] .markdown-content table th,
+            html[data-theme="dark"] .markdown-content table td {
+                border-color: #373e47;
+            }
+
+            html[data-theme="dark"] .markdown-content a {
+                color: #a8c8ec;
+            }
+
+            html[data-theme="dark"] .markdown-content a:hover {
+                color: #ff9a9e;
+            }
+        </style>
+        <!-- 引入 marked.js 用于 Markdown 解析 -->
+        <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+        <!-- 引入 highlight.js 用于代码高亮 -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github.min.css" id="highlight-light">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css" id="highlight-dark" disabled>
+        <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+        <script>
+            const userMode = localStorage.getItem("portfolio-theme");
+            const systemDarkMode = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+            if (userMode === "dark" || (userMode !== "light" && systemDarkMode)) {
+                document.documentElement.setAttribute("data-theme", "dark");
+            }
+        </script>
+    </head>
+    <body>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="切换主题">🌓</button>
+        <button class="back-to-top" onclick="scrollToTop()" aria-label="返回顶部">↑</button>
+        <a href="../orgin.html" class="back-to-origin" aria-label="返回主页">🏠</a>
+        <button class="lang-toggle" onclick="toggleLanguage()" aria-label="切换语言">EN</button>
+
+        <div class="container">
+            <header id="top">
+                <h1 id="page-title">Bash 基础命令</h1>
+                <p class="subtitle" id="page-subtitle">Shell 命令行基础知识</p>
+            </header>
+
+            <div class="content-section">
+                <div id="markdown-content" class="markdown-content">
+                    <!-- Markdown 内容将在这里渲染 -->
+                    <p style="text-align: center; color: #999;">加载中...</p>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            let currentLang = 'zh';
+
+            // 配置 marked.js
+            marked.setOptions({
+                breaks: true,
+                gfm: true,
+                highlight: function(code, lang) {
+                    if (lang && hljs.getLanguage(lang)) {
+                        try {
+                            return hljs.highlight(code, { language: lang }).value;
+                        } catch (err) {}
+                    }
+                    return hljs.highlightAuto(code).value;
+                }
+            });
+
+            // 加载 Markdown 文件
+            async function loadMarkdown(file) {
+                try {
+                    const response = await fetch(file);
+                    if (!response.ok) {
+                        throw new Error('文件加载失败');
+                    }
+                    const markdown = await response.text();
+                    const html = marked.parse(markdown);
+                    document.getElementById('markdown-content').innerHTML = html;
+                    
+                    // 对所有代码块应用语法高亮
+                    document.querySelectorAll('pre code').forEach((block) => {
+                        hljs.highlightElement(block);
+                    });
+                } catch (error) {
+                    document.getElementById('markdown-content').innerHTML = 
+                        '<p style="color: #e74c3c; text-align: center;">内容加载失败: ' + error.message + '</p>';
+                }
+            }
+
+            // 初始加载中文版本
+            loadMarkdown('./base.md');
+
+            // 主题切换
+            function toggleTheme() {
+                const html = document.documentElement;
+                const currentTheme = html.getAttribute("data-theme");
+                const newTheme = currentTheme === "dark" ? "light" : "dark";
+                html.setAttribute("data-theme", newTheme);
+                localStorage.setItem("portfolio-theme", newTheme);
+                
+                // 切换代码高亮主题
+                const lightTheme = document.getElementById('highlight-light');
+                const darkTheme = document.getElementById('highlight-dark');
+                if (newTheme === 'dark') {
+                    lightTheme.disabled = true;
+                    darkTheme.disabled = false;
+                } else {
+                    lightTheme.disabled = false;
+                    darkTheme.disabled = true;
+                }
+            }
+
+            // 初始化代码高亮主题
+            window.addEventListener('DOMContentLoaded', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const lightTheme = document.getElementById('highlight-light');
+                const darkTheme = document.getElementById('highlight-dark');
+                if (currentTheme === 'dark') {
+                    lightTheme.disabled = true;
+                    darkTheme.disabled = false;
+                }
+            });
+
+            // 返回顶部
+            function scrollToTop() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
+
+            // 语言切换
+            function toggleLanguage() {
+                const langBtn = document.querySelector('.lang-toggle');
+                const pageTitle = document.getElementById('page-title');
+                const pageSubtitle = document.getElementById('page-subtitle');
+                
+                if (currentLang === 'zh') {
+                    loadMarkdown('./base_en.md');
+                    langBtn.textContent = '中';
+                    pageTitle.textContent = 'Basic Bash Commands';
+                    pageSubtitle.textContent = 'Shell Command Line Basics';
+                    currentLang = 'en';
+                } else {
+                    loadMarkdown('./base.md');
+                    langBtn.textContent = 'EN';
+                    pageTitle.textContent = 'Bash 基础命令';
+                    pageSubtitle.textContent = 'Shell 命令行基础知识';
+                    currentLang = 'zh';
+                }
+            }
+
+            // 显示/隐藏返回顶部按钮
+            window.addEventListener('scroll', function() {
+                const backToTop = document.querySelector('.back-to-top');
+                if (window.pageYOffset > 300) {
+                    backToTop.classList.add('visible');
+                } else {
+                    backToTop.classList.remove('visible');
+                }
+            });
+        </script>
+    </body>
+</html>

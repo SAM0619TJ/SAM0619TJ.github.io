@@ -137,6 +137,36 @@
                 transform: translateY(-5px);
             }
 
+            /* 返回Origin按钮 */
+            .back-to-origin {
+                position: fixed;
+                bottom: px;
+                right: 30px;
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                color: white;
+                border: none;
+                padding: 12px 16px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 18px;
+                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+                transition: all 0.3s ease;
+                z-index: 1000;
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 50px;
+                min-height: 50px;
+            }
+
+            .back-to-origin:hover {
+                transform: translateY(-3px) scale(1.05);
+                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+                text-decoration: none;
+                color: white;
+            }
+
             /* 内容区域 */
             .content-section {
                 background: white;
@@ -361,6 +391,14 @@
                 color: #adbac7;
             }
 
+            html[data-theme="dark"] .back-to-origin {
+                background: linear-gradient(135deg, #5568d3, #6a3f91);
+            }
+
+            html[data-theme="dark"] .back-to-origin:hover {
+                background: linear-gradient(135deg, #4a5bc4, #5f3682);
+            }
+
             /* 响应式设计 */
             @media (max-width: 768px) {
                 .container {
@@ -408,6 +446,7 @@
     <body>
         <button class="theme-toggle" onclick="toggleTheme()" aria-label="切换主题">🌓</button>
         <button class="back-to-top" onclick="scrollToTop()" aria-label="返回顶部">↑</button>
+        <a href="../orgin.html" class="back-to-origin" aria-label="返回主页">🏠</a>
 
         <div class="container">
             <header id="top">
