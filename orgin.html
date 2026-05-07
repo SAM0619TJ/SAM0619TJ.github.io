@@ -4,10 +4,76 @@
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width,initial-scale=1"/>
         <title>Kyoko的作品集 | 个人网站</title>
+        <meta name="description" content="Kyoko的个人作品集 - 机器人工程、技术美术、前端开发">
+        <meta name="keywords" content="前端开发,机器人工程,技术美术,个人作品集">
         <style>
+            /* CSS 变量定义 */
+            :root {
+                --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+                --text-primary: #1a202c;
+                --text-secondary: #4a5568;
+                --bg-light: #f7fafc;
+            }
+
             html {
                 background: var(--bg-color, #fff);
                 scroll-behavior: smooth; /* 平滑滚动效果 */
+            }
+
+            /* 页面加载器 */
+            .page-loader {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(135deg, #ff9a9e 0%, #a8c8ec 100%);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;
+                transition: opacity 0.5s, visibility 0.5s;
+            }
+
+            .page-loader.hidden {
+                opacity: 0;
+                visibility: hidden;
+            }
+
+            .loader-spinner {
+                width: 60px;
+                height: 60px;
+                border: 4px solid rgba(255, 255, 255, 0.3);
+                border-top: 4px solid white;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+                margin-bottom: 20px;
+            }
+
+            .loader-text {
+                color: white;
+                font-size: 1.2rem;
+                font-weight: 500;
+                text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            }
+
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+
+            /* 阅读进度指示器 */
+            .reading-progress {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 3px;
+                background: linear-gradient(90deg, #667eea, #764ba2);
+                z-index: 1002;
+                transition: width 0.1s ease;
             }
 
             html[data-theme="dark"] {
@@ -21,6 +87,22 @@
                 color: #2c3e50;
                 margin: 0;
                 padding: 0;
+                position: relative;
+            }
+
+            /* 背景纹理 */
+            body::before {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-image:
+                    radial-gradient(circle at 20% 50%, rgba(255, 154, 158, 0.03) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 80%, rgba(168, 200, 236, 0.03) 0%, transparent 50%);
+                pointer-events: none;
+                z-index: -1;
             }
 
             .container {
@@ -80,12 +162,63 @@
                 border-radius: 20px;
                 transition: all 0.3s ease;
                 font-weight: 500;
+                position: relative;
+            }
+
+            .nav-links a.active {
+                background: linear-gradient(135deg, #ff9a9e 0%, #a8c8ec 100%);
+                color: white;
             }
 
             .nav-links a:hover {
                 background: linear-gradient(135deg, #ff9a9e 0%, #a8c8ec 100%);
                 color: white;
                 transform: translateY(-2px);
+            }
+
+            /* 搜索容器 */
+            .search-container {
+                position: relative;
+                max-width: 400px;
+                margin: 20px auto;
+            }
+
+            .search-input {
+                width: 100%;
+                padding: 12px 45px 12px 20px;
+                border: 2px solid #e0e0e0;
+                border-radius: 25px;
+                font-size: 0.95rem;
+                transition: all 0.3s ease;
+                box-sizing: border-box;
+            }
+
+            .search-input:focus {
+                outline: none;
+                border-color: #667eea;
+                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            }
+
+            .search-btn {
+                position: absolute;
+                right: 5px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                border: none;
+                width: 35px;
+                height: 35px;
+                border-radius: 50%;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 16px;
+            }
+
+            .search-btn:hover {
+                transform: translateY(-50%) scale(1.1);
             }
 
             /* 章节标题 */
@@ -120,13 +253,41 @@
                 background: white;
                 border-radius: 15px;
                 overflow: hidden;
-                box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-                transition: all 0.3s ease;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                animation: fadeInUp 0.6s ease-out forwards;
+                opacity: 0;
+                will-change: transform;
+                contain: layout style paint;
+            }
+
+            .project-card:nth-child(1) {
+                animation-delay: 0.1s;
+                border-top: 3px solid #667eea;
+            }
+            .project-card:nth-child(2) {
+                animation-delay: 0.2s;
+                border-top: 3px solid #f093fb;
+            }
+            .project-card:nth-child(3) {
+                animation-delay: 0.3s;
+                border-top: 3px solid #4facfe;
             }
 
             .project-card:hover {
-                transform: translateY(-10px);
-                box-shadow: 0 15px 40px rgba(255, 154, 158, 0.3);
+                transform: translateY(-12px) scale(1.02);
+                box-shadow: 0 20px 50px rgba(255, 154, 158, 0.25);
+            }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
             }
 
             .project-image {
@@ -285,6 +446,23 @@
                 transition: all 0.3s ease;
                 cursor: pointer;
                 border: 2px solid transparent;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .skill-tag::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+                transition: left 0.5s;
+            }
+
+            .skill-tag:hover::before {
+                left: 100%;
             }
 
             .skill-tag:hover {
@@ -486,6 +664,12 @@
                 color: #adbac7;
             }
 
+            html[data-theme="dark"] body::before {
+                background-image:
+                    radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.05) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.05) 0%, transparent 50%);
+            }
+
             html[data-theme="dark"] .nav-bar,
             html[data-theme="dark"] .project-card,
             html[data-theme="dark"] .category-card,
@@ -532,6 +716,105 @@
             html[data-theme="dark"] .catalog-section {
                 border-color: #373e47;
             }
+
+            html[data-theme="dark"] .search-input {
+                background: #2d333b;
+                border-color: #373e47;
+                color: #adbac7;
+            }
+
+            /* 响应式优化 */
+            @media (max-width: 768px) {
+                .container {
+                    padding: 10px;
+                }
+
+                h1 {
+                    font-size: 2.2rem;
+                }
+
+                .section-title {
+                    font-size: 1.8rem;
+                }
+
+                .content-section {
+                    padding: 25px;
+                }
+
+                /* 更大的触摸目标 */
+                .nav-links a,
+                .btn {
+                    min-height: 48px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                /* 优化卡片布局 */
+                .projects-grid {
+                    grid-template-columns: 1fr;
+                    gap: 20px;
+                }
+
+                /* 固定按钮位置调整 */
+                .theme-toggle {
+                    top: 10px;
+                    right: 10px;
+                    padding: 10px;
+                    font-size: 20px;
+                }
+
+                .back-to-top {
+                    bottom: 20px;
+                    right: 20px;
+                    padding: 12px 15px;
+                }
+
+                /* 减少动画以提升性能 */
+                * {
+                    animation-duration: 0.3s !important;
+                    transition-duration: 0.3s !important;
+                }
+
+                .search-container {
+                    max-width: 100%;
+                    padding: 0 10px;
+                }
+            }
+
+            /* 横屏模式优化 */
+            @media (max-width: 768px) and (orientation: landscape) {
+                header {
+                    padding: 30px 20px;
+                }
+
+                h1 {
+                    font-size: 2rem;
+                }
+            }
+
+            /* 跳过导航链接 */
+            .skip-link {
+                position: absolute;
+                top: -40px;
+                left: 0;
+                background: #667eea;
+                color: white;
+                padding: 8px 16px;
+                text-decoration: none;
+                z-index: 10000;
+                border-radius: 0 0 8px 0;
+            }
+
+            .skip-link:focus {
+                top: 0;
+            }
+
+            /* 焦点样式 */
+            a:focus, button:focus, input:focus {
+                outline: 3px solid rgba(102, 126, 234, 0.5);
+                outline-offset: 2px;
+            }
         </style>
         <script>
             const userMode = localStorage.getItem("portfolio-theme");
@@ -543,17 +826,29 @@
         </script>
     </head>
     <body>
+        <!-- 页面加载器 -->
+        <div class="page-loader">
+            <div class="loader-spinner"></div>
+            <p class="loader-text">加载中...</p>
+        </div>
+
+        <!-- 阅读进度指示器 -->
+        <div class="reading-progress"></div>
+
+        <!-- 跳过导航链接 -->
+        <a href="#main-content" class="skip-link">跳到主内容</a>
+
         <button class="theme-toggle" onclick="toggleTheme()" aria-label="切换主题">🌓</button>
         <button class="back-to-top" onclick="scrollToTop()" aria-label="返回顶部">↑</button>
 
-        <div class="container">
+        <div class="container" id="main-content">
             <header id="top">
                 <h1>欢迎来到Kyoko酱的个人小站</h1>
                 <p class="subtitle">机器人工程 | 技术美术 | 前端开发</p>
             </header>
 
             <!-- 导航栏 -->
-            <nav class="nav-bar">
+            <nav class="nav-bar" role="navigation" aria-label="主导航">
                 <ul class="nav-links">
                     <li><a href="#projects">🚀 项目作品</a></li>
                     <li><a href="#study-notes">📚 学习笔记</a></li>
@@ -562,13 +857,19 @@
                 </ul>
             </nav>
 
+            <!-- 搜索功能 -->
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="搜索笔记..." class="search-input" aria-label="搜索笔记">
+                <button class="search-btn" aria-label="搜索">🔍</button>
+            </div>
+
             <!-- 项目作品区 -->
             <section id="projects">
                 <h2 class="section-title">🚀 项目作品</h2>
                 <div class="projects-grid">
                     <!-- 个人博客网站 -->
-                    <div class="project-card">
-                        <img src="images/image4.jpg" alt="个人博客项目截图" class="project-image" onerror="this.src='https://via.placeholder.com/400x220/667eea/ffffff?text=Blog'">
+                    <div class="project-card" data-category="web">
+                        <img data-src="images/image4.jpg" alt="个人博客项目截图" class="project-image lazy-load" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 220'%3E%3Crect fill='%23f0f0f0' width='400' height='220'/%3E%3C/svg%3E">
                         <div class="project-content">
                             <h3 class="project-title">🌐 个人博客网站</h3>
                             <p class="project-description">
@@ -588,12 +889,12 @@
                     </div>
 
                     <!-- 3D渲染引擎 -->
-                    <div class="project-card">
-                        <img src="images/image3.jpg" alt="3D渲染引擎项目截图" class="project-image" onerror="this.src='https://via.placeholder.com/400x220/764ba2/ffffff?text=3D+Engine'">
+                    <div class="project-card" data-category="3d">
+                        <img data-src="images/image3.jpg" alt="3D渲染引擎项目截图" class="project-image lazy-load" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 220'%3E%3Crect fill='%23f0f0f0' width='400' height='220'/%3E%3C/svg%3E">
                         <div class="project-content">
                             <h3 class="project-title">🎨 3D渲染引擎</h3>
                             <p class="project-description">
-                                基于WebGL开发的实时3D渲染引擎，支持PBR材质、阴影映射和后处理效果。实现了高效的场景管理和光照计算系统。
+                                基于WebGL开发的实时3D渲染引���，支持PBR材质、阴影映射和后处理效果。实现了高效的场景管理和光照计算系统。
                             </p>
                             <div class="tech-stack">
                                 <span class="tech-tag">WebGL</span>
@@ -609,8 +910,8 @@
                     </div>
 
                     <!-- RoboMaster -->
-                    <div class="project-card">
-                        <img src="images/image1.jpg" alt="RoboMaster项目" class="project-image" onerror="this.src='https://via.placeholder.com/400x220/667eea/ffffff?text=RoboMaster'">
+                    <div class="project-card" data-category="robot">
+                        <img data-src="images/image1.jpg" alt="RoboMaster项目" class="project-image lazy-load" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 220'%3E%3Crect fill='%23f0f0f0' width='400' height='220'/%3E%3C/svg%3E">
                         <div class="project-content">
                             <h3 class="project-title">🤖 RoboMaster</h3>
                             <p class="project-description">
@@ -901,6 +1202,120 @@
         </div>
 
         <script>
+            // 页面加载完成后隐藏加载器
+            window.addEventListener('load', function() {
+                const loader = document.querySelector('.page-loader');
+                setTimeout(() => {
+                    loader.classList.add('hidden');
+                }, 500);
+            });
+
+            // 阅读进度指示器
+            window.addEventListener('scroll', () => {
+                const winScroll = document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / height) * 100;
+                document.querySelector('.reading-progress').style.width = scrolled + '%';
+            });
+
+            // 懒加载实现
+            const lazyLoadImages = () => {
+                const images = document.querySelectorAll('img.lazy-load');
+                const imageObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            img.src = img.dataset.src;
+                            img.classList.remove('lazy-load');
+                            observer.unobserve(img);
+                        }
+                    });
+                });
+
+                images.forEach(img => imageObserver.observe(img));
+            };
+
+            document.addEventListener('DOMContentLoaded', lazyLoadImages);
+
+            // 搜索功能实现
+            document.getElementById('searchInput').addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                const catalogItems = document.querySelectorAll('.catalog-item, .catalog-sub-item');
+
+                catalogItems.forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        item.style.display = '';
+                        item.style.background = searchTerm ? 'rgba(255, 154, 158, 0.1)' : '';
+                    } else {
+                        item.style.display = searchTerm ? 'none' : '';
+                    }
+                });
+            });
+
+            // 键盘快捷键
+            document.addEventListener('keydown', (e) => {
+                // Ctrl/Cmd + K 打开搜索
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                    e.preventDefault();
+                    document.getElementById('searchInput').focus();
+                }
+
+                // ESC 关闭搜索
+                if (e.key === 'Escape') {
+                    document.getElementById('searchInput').blur();
+                    document.getElementById('searchInput').value = '';
+                    // 清除搜索高亮
+                    const catalogItems = document.querySelectorAll('.catalog-item, .catalog-sub-item');
+                    catalogItems.forEach(item => {
+                        item.style.display = '';
+                        item.style.background = '';
+                    });
+                }
+
+                // Home 键返回顶部
+                if (e.key === 'Home') {
+                    e.preventDefault();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+
+            // 导航高亮更新
+            function updateActiveNav() {
+                const sections = document.querySelectorAll('section[id]');
+                const navLinks = document.querySelectorAll('.nav-links a');
+
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (window.scrollY >= sectionTop - 200) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+
+            // 防抖函数
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
+
+            const debouncedUpdateActiveNav = debounce(updateActiveNav, 100);
+
             // 主题切换
             function toggleTheme() {
                 const html = document.documentElement;
@@ -918,7 +1333,7 @@
                 });
             }
 
-            // 显示/隐藏返回顶部按钮
+            // 显示/隐藏返回顶部按钮和更新导航
             window.addEventListener('scroll', function() {
                 const backToTop = document.querySelector('.back-to-top');
                 if (window.scrollY > 300) {
@@ -926,6 +1341,9 @@
                 } else {
                     backToTop.classList.remove('visible');
                 }
+
+                // 更新导航高亮
+                debouncedUpdateActiveNav();
             });
 
             // 切换主目录
