@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
+  <title>Markdown</title>
+
+  <link rel="stylesheet" href="./assets/ui.css" />
+
+  <!-- marked.js + highlight.js -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github.min.css" id="highlight-light">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css" id="highlight-dark" disabled>
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+
+  <script type="module">
+    import { initSidebarUI, initThemeOnLoad } from "./assets/ui.js";
+    initThemeOnLoad();
+    initSidebarUI();
+  </script>
+
+  <style>
+    #md { max-width: 90ch; }
+    #md img { max-width: 100%; height: auto; }
+    #md table { border-collapse: collapse; width: 100%; }
+    #md th, #md td { border: 1px solid var(--border); padding: 8px; vertical-align: top; }
+    #md a { text-decoration: underline; text-underline-offset: 3px; }
+  </style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <button class="sidebar-toggle" id="sidebarToggle" type="button">菜单</button>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <div>
+          <div class="title">Markdown</div>
+          <div class="meta" id="fileMeta">—</div>
+        </div>
+        <button class="iconbtn" type="button" id="themeBtn" aria-label="切换主题">主题</button>
+      </div>
+
+      <nav class="nav" aria-label="侧边栏导航">
+        <a href="./orgin.html">返回首页</a>
+        <a href="#" id="openRaw">打开原文件</a>
+      </nav>
+    </aside>
+
+    <main class="content" id="main">
+      <div class="wrap">
+        <section class="card prose">
+          <div id="md">加载中...</div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <button class="backtop" id="backTop" type="button" aria-label="返回顶部">↑</button>
+
+  <script>
+    function syncHighlightTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const lightTheme = document.getElementById('highlight-light');
+      const darkTheme = document.getElementById('highlight-dark');
+      if (!lightTheme || !darkTheme) return;
+      if (currentTheme === 'dark') {
+        lightTheme.disabled = true;
+        darkTheme.disabled = false;
+      } else {
+        lightTheme.disabled = false;
+        darkTheme.disabled = true;
+      }
+    }
+
+    marked.setOptions({
+      breaks: true,
+      gfm: true,
+      highlight: function(code, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+          try { return hljs.highlight(code, { language: lang }).value; } catch (err) {}
+        }
+        return hljs.highlightAuto(code).value;
+      }
+    });
+
+    function getFileParam() {
+      const file = new URLSearchParams(location.search).get('file') || '';
+      // basic safety: only allow relative paths without protocol
+      if (!file || file.includes('://') || file.startsWith('/') || file.includes('\\\\')) return '';
+      return file;
+    }
+
+    async function load() {
+      const file = getFileParam();
+      const meta = document.getElementById('fileMeta');
+      const md = document.getElementById('md');
+      const openRaw = document.getElementById('openRaw');
+
+      if (!file) {
+        meta.textContent = '未指定文件';
+        md.innerHTML = '<p class=\"muted\">用法：<code>md.html?file=robot_engineering/linux_debug.md</code></p>';
+        openRaw.removeAttribute('href');
+        return;
+      }
+
+      meta.textContent = file;
+      document.title = file;
+      openRaw.href = './' + file;
+
+      try {
+        const resp = await fetch('./' + file);
+        if (!resp.ok) throw new Error('文件加载失败');
+        const text = await resp.text();
+        md.innerHTML = marked.parse(text);
+        document.querySelectorAll('pre code').forEach((block) => hljs.highlightElement(block));
+      } catch (e) {
+        md.innerHTML = '<p style=\"color:#ef4444\">内容加载失败：' + (e && e.message ? e.message : String(e)) + '</p>';
+      }
+    }
+
+    syncHighlightTheme();
+    const mo = new MutationObserver(syncHighlightTheme);
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    load();
+  </script>
+</body>
+</html>
+

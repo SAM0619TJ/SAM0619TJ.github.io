@@ -1,473 +1,96 @@
 <!doctype html>
 <html lang="zh-CN" data-theme="light">
-    <head>
-        <meta charset="utf-8"/>
-        <meta name="viewport" content="width=device-width,initial-scale=1"/>
-        <title>代数余子式简介 | Kyoko的学习笔记</title>
-        <style>
-            html {
-                background: var(--bg-color, #fff);
-                scroll-behavior: smooth;
-            }
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
+  <title>代数余子式简介 | Kyoko 的学习笔记</title>
+  <link rel="stylesheet" href="../assets/ui.css" />
+  <script>
+    // MathJax 可能会被网络环境拦截；这里做一个 CDN fallback
+    (function loadMathJax(){
+      function add(src){
+        const s = document.createElement('script');
+        s.async = true;
+        s.id = 'MathJax-script';
+        s.src = src;
+        s.onerror = () => {
+          if (src.includes('cdn.jsdelivr.net')) add('https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js');
+        };
+        document.head.appendChild(s);
+      }
+      add('https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js');
+    })();
+  </script>
+  <script type="module">
+    import { initSidebarUI, initThemeOnLoad } from "../assets/ui.js";
+    initThemeOnLoad();
+    initSidebarUI();
+  </script>
+  <style>
+    .content-section{ margin: 0 0 16px; }
+    .content-section{ border:1px solid var(--border); background:var(--panel); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px; }
+    .content-section h2{ margin:0 0 10px; }
+    .math-block, .highlight-box{ border:1px solid var(--border); border-radius:14px; padding:14px; background: color-mix(in oklab, var(--panel2) 70%, transparent); }
+    /* MathJax 未加载时，原始 LaTeX 也尽量可读 */
+    .math-block{ overflow:auto; white-space: pre-wrap; word-break: break-word; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace; font-size: 0.95em; }
+  </style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <button class="sidebar-toggle" id="sidebarToggle" type="button">菜单</button>
 
-            html[data-theme="dark"] {
-                background: var(--bg-color, #22272e);
-            }
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <div>
+          <div class="title">学习笔记</div>
+          <div class="meta">代数余子式</div>
+        </div>
+        <button class="iconbtn" type="button" id="themeBtn" aria-label="切换主题">主题</button>
+      </div>
 
-            body {
-                background: var(--bg-color);
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-                line-height: 1.6;
-                color: #2c3e50;
-                margin: 0;
-                padding: 0;
-            }
+      <nav class="nav" aria-label="侧边栏导航">
+        <a href="../orgin.html">返回首页</a>
 
-            .container {
-                max-width: 1200px;
-                margin: 0 auto;
-                padding: 20px;
-            }
+        <div class="group" data-open="true">
+          <button type="button" data-toggle>
+            本页目录
+            <span class="chev" aria-hidden="true"></span>
+          </button>
+          <div class="submenu">
+            <a href="#basic-concepts">基本概念</a>
+            <a href="#definitions">定义与记号</a>
+            <a href="#calculation">计算方法</a>
+            <a href="#properties">性质与定理</a>
+            <a href="#applications">应用实例</a>
+          </div>
+        </div>
 
-            /* 头部样式 */
-            header {
-                text-align: center;
-                padding: 60px 20px;
-                background: linear-gradient(135deg, #ff9a9e 0%, #a8c8ec 100%);
-                color: white;
-                border-radius: 15px;
-                margin-bottom: 40px;
-                box-shadow: 0 10px 30px rgba(255, 154, 158, 0.3);
-            }
+        <div class="group" data-open="false">
+          <button type="button" data-toggle>
+            其它笔记
+            <span class="chev" aria-hidden="true"></span>
+          </button>
+          <div class="submenu">
+            <a href="./逆矩阵.html">逆矩阵</a>
+            <a href="./bash_base_command.html">Bash 基础命令</a>
+          </div>
+        </div>
+      </nav>
+    </aside>
 
-            h1 {
-                font-size: 2.8rem;
-                margin-bottom: 1rem;
-                text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-            }
+    <main class="content" id="main">
+      <div class="wrap">
+        <section class="card">
+          <h1>代数余子式简介</h1>
+          <p class="muted">线性代数核心概念</p>
+        </section>
 
-            .subtitle {
-                font-size: 1.2rem;
-                opacity: 0.95;
-            }
-
-            /* 导航栏 */
-            .nav-bar {
-                position: sticky;
-                top: 0;
-                z-index: 1000;
-                background: white;
-                box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-                padding: 15px 0;
-                margin-bottom: 30px;
-                border-radius: 10px;
-            }
-
-            .nav-links {
-                display: flex;
-                justify-content: center;
-                flex-wrap: wrap;
-                gap: 20px;
-                list-style: none;
-                margin: 0;
-                padding: 0;
-            }
-
-            .nav-links a {
-                text-decoration: none;
-                color: #2c3e50;
-                padding: 8px 20px;
-                border-radius: 20px;
-                transition: all 0.3s ease;
-                font-weight: 500;
-            }
-
-            .nav-links a:hover {
-                background: linear-gradient(135deg, #ff9a9e 0%, #a8c8ec 100%);
-                color: white;
-                transform: translateY(-2px);
-            }
-
-            /* 主题切换按钮 */
-            .theme-toggle {
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: linear-gradient(135deg, #ff9a9e, #a8c8ec);
-                color: white;
-                border: none;
-                padding: 12px;
-                border-radius: 50%;
-                cursor: pointer;
-                font-size: 24px;
-                box-shadow: 0 4px 15px rgba(255, 154, 158, 0.4);
-                transition: all 0.3s ease;
-                z-index: 1001;
-            }
-
-            .theme-toggle:hover {
-                transform: scale(1.1) rotate(15deg);
-            }
-
-            /* 返回顶部按钮 */
-            .back-to-top {
-                position: fixed;
-                bottom: 30px;
-                right: 30px;
-                background: linear-gradient(135deg, #ff9a9e, #a8c8ec);
-                color: white;
-                border: none;
-                padding: 15px 18px;
-                border-radius: 50%;
-                cursor: pointer;
-                font-size: 20px;
-                box-shadow: 0 4px 15px rgba(255, 154, 158, 0.4);
-                transition: all 0.3s ease;
-                opacity: 0;
-                visibility: hidden;
-                z-index: 1000;
-            }
-
-            .back-to-top.visible {
-                opacity: 1;
-                visibility: visible;
-            }
-
-            .back-to-top:hover {
-                transform: translateY(-5px);
-            }
-
-            /* 返回Origin按钮 */
-            .back-to-origin {
-                position: fixed;
-                bottom: px;
-                right: 30px;
-                background: linear-gradient(135deg, #667eea, #764ba2);
-                color: white;
-                border: none;
-                padding: 12px 16px;
-                border-radius: 50%;
-                cursor: pointer;
-                font-size: 18px;
-                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-                transition: all 0.3s ease;
-                z-index: 1000;
-                text-decoration: none;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                min-width: 50px;
-                min-height: 50px;
-            }
-
-            .back-to-origin:hover {
-                transform: translateY(-3px) scale(1.05);
-                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
-                text-decoration: none;
-                color: white;
-            }
-
-            /* 内容区域 */
-            .content-section {
-                background: white;
-                border-radius: 15px;
-                padding: 40px;
-                box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-                margin-bottom: 30px;
-            }
-
-            /* 章节标题 */
-            .section-title {
-                font-size: 2.2rem;
-                color: #ff9a9e;
-                margin: 40px 0 25px;
-                padding-bottom: 15px;
-                border-bottom: 3px solid #ff9a9e;
-                position: relative;
-            }
-
-            .section-title::before {
-                content: '';
-                position: absolute;
-                bottom: -3px;
-                left: 0;
-                width: 80px;
-                height: 3px;
-                background: #a8c8ec;
-            }
-
-            /* 子标题 */
-            h3 {
-                color: #2c3e50;
-                font-size: 1.5rem;
-                margin: 30px 0 15px;
-                padding-left: 15px;
-                border-left: 4px solid #ff9a9e;
-            }
-
-            h4 {
-                color: #2c3e50;
-                font-size: 1.2rem;
-                margin: 25px 0 10px;
-                color: #a8c8ec;
-            }
-
-            /* 数学公式容器 */
-            .math-block {
-                background: linear-gradient(135deg, #ff9a9e08, #a8c8ec08);
-                border: 2px solid #ff9a9e20;
-                border-radius: 10px;
-                padding: 20px;
-                margin: 20px 0;
-                text-align: center;
-                font-size: 1.1rem;
-            }
-
-            /* 示例框 */
-            .example-box {
-                background: linear-gradient(135deg, #ff9a9e05, #a8c8ec05);
-                border: 2px solid #ff9a9e30;
-                border-radius: 12px;
-                padding: 25px;
-                margin: 25px 0;
-                border-left: 5px solid #ff9a9e;
-            }
-
-            .example-title {
-                color: #ff9a9e;
-                font-weight: 600;
-                font-size: 1.1rem;
-                margin-bottom: 15px;
-                display: flex;
-                align-items: center;
-            }
-
-            .example-title::before {
-                content: "💡";
-                margin-right: 8px;
-            }
-
-            /* 步骤列表 */
-            .steps-list {
-                background: white;
-                border-radius: 10px;
-                padding: 20px;
-                margin: 20px 0;
-                box-shadow: 0 3px 15px rgba(0,0,0,0.05);
-            }
-
-            .steps-list ol {
-                padding-left: 20px;
-            }
-
-            .steps-list li {
-                margin-bottom: 10px;
-                padding: 8px;
-                border-radius: 5px;
-                transition: all 0.3s ease;
-            }
-
-            .steps-list li:hover {
-                background: linear-gradient(135deg, #ff9a9e08, #a8c8ec08);
-                transform: translateX(5px);
-            }
-
-            /* 练习题区域 */
-            .exercise-section {
-                background: linear-gradient(135deg, #ff9a9e10, #a8c8ec10);
-                border-radius: 15px;
-                padding: 30px;
-                margin: 30px 0;
-            }
-
-            .exercise-title {
-                color: #ff9a9e;
-                font-size: 1.3rem;
-                margin-bottom: 20px;
-                font-weight: 600;
-            }
-
-            .exercise-item {
-                background: white;
-                border-radius: 10px;
-                padding: 20px;
-                margin: 15px 0;
-                box-shadow: 0 3px 15px rgba(0,0,0,0.05);
-                transition: all 0.3s ease;
-            }
-
-            .exercise-item:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 8px 25px rgba(255, 154, 158, 0.2);
-            }
-
-            /* 重点提示框 */
-            .highlight-box {
-                background: linear-gradient(135deg, #ff9a9e15, #a8c8ec15);
-                border: 2px solid #ff9a9e40;
-                border-radius: 12px;
-                padding: 20px;
-                margin: 25px 0;
-                position: relative;
-            }
-
-            .highlight-box::before {
-                content: "⚡";
-                position: absolute;
-                top: -10px;
-                left: 20px;
-                background: white;
-                padding: 5px 10px;
-                border-radius: 50%;
-                font-size: 1.2rem;
-            }
-
-            /* 相关链接区域 */
-            .related-links {
-                background: white;
-                border-radius: 15px;
-                padding: 30px;
-                box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-                margin-top: 40px;
-            }
-
-            .related-links h3 {
-                color: #ff9a9e;
-                margin-bottom: 20px;
-                border-left: none;
-                padding-left: 0;
-            }
-
-            .link-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                gap: 15px;
-            }
-
-            .link-item {
-                background: linear-gradient(135deg, #ff9a9e08, #a8c8ec08);
-                padding: 15px 20px;
-                border-radius: 10px;
-                text-decoration: none;
-                color: #2c3e50;
-                transition: all 0.3s ease;
-                border: 2px solid transparent;
-            }
-
-            .link-item:hover {
-                background: linear-gradient(135deg, #ff9a9e20, #a8c8ec20);
-                transform: translateY(-2px);
-                border-color: #ff9a9e30;
-            }
-
-            /* 深色模式 */
-            html[data-theme="dark"] body {
-                color: #adbac7;
-            }
-
-            html[data-theme="dark"] .nav-bar,
-            html[data-theme="dark"] .content-section,
-            html[data-theme="dark"] .related-links {
-                background: #2d333b;
-                box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            }
-
-            html[data-theme="dark"] .section-title,
-            html[data-theme="dark"] h3,
-            html[data-theme="dark"] h4 {
-                color: #adbac7;
-            }
-
-            html[data-theme="dark"] .nav-links a {
-                color: #adbac7;
-            }
-
-            html[data-theme="dark"] .steps-list,
-            html[data-theme="dark"] .exercise-item {
-                background: #22272e;
-            }
-
-            html[data-theme="dark"] .link-item {
-                color: #adbac7;
-            }
-
-            html[data-theme="dark"] .back-to-origin {
-                background: linear-gradient(135deg, #5568d3, #6a3f91);
-            }
-
-            html[data-theme="dark"] .back-to-origin:hover {
-                background: linear-gradient(135deg, #4a5bc4, #5f3682);
-            }
-
-            /* 响应式设计 */
-            @media (max-width: 768px) {
-                .container {
-                    padding: 10px;
-                }
-
-                h1 {
-                    font-size: 2.2rem;
-                }
-
-                .section-title {
-                    font-size: 1.8rem;
-                }
-
-                .content-section {
-                    padding: 25px;
-                }
-            }
-        </style>
-        <script>
-            // MathJax 配置
-            window.MathJax = {
-                tex: {
-                    inlineMath: [['$', '$'], ['\\(', '\\)']],
-                    displayMath: [['$$', '$$'], ['\\[', '\\]']],
-                    processEscapes: true,
-                    processEnvironments: true
-                },
-                options: {
-                    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
-                }
-            };
-        </script>
-        <script async src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-        <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-        <script>
-            const userMode = localStorage.getItem("portfolio-theme");
-            const systemDarkMode = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-            if (userMode === "dark" || (userMode !== "light" && systemDarkMode)) {
-                document.documentElement.setAttribute("data-theme", "dark");
-            }
-        </script>
-    </head>
-    <body>
-        <button class="theme-toggle" onclick="toggleTheme()" aria-label="切换主题">🌓</button>
-        <button class="back-to-top" onclick="scrollToTop()" aria-label="返回顶部">↑</button>
-        <a href="../orgin.html" class="back-to-origin" aria-label="返回主页">🏠</a>
-
-        <div class="container">
-            <header id="top">
-                <h1>代数余子式简介</h1>
-                <p class="subtitle">线性代数核心概念 | 详细讲解与实例</p>
-            </header>
-
-            <!-- 导航栏 -->
-            <nav class="nav-bar">
-                <ul class="nav-links">
-                    <li><a href="#basic-concepts">📚 基本概念</a></li>
-                    <li><a href="#definitions">📝 定义与记号</a></li>
-                    <li><a href="#calculation">⚙️ 计算方法</a></li>
-                    <li><a href="#properties">🔍 性质与定理</a></li>
-                    <li><a href="#applications">💡 应用实例</a></li>
-                </ul>
-            </nav>
-
-            <!-- 基本概念 -->
-            <section id="basic-concepts" class="content-section">
-                <h2 class="section-title">📚 基本概念</h2>
+        <div class="prose">
+          <section id="basic-concepts" class="content-section">
+                <h2 class="section-title">基本概念</h2>
                 
                 <h3>什么是代数余子式？</h3>
                 <p><strong>代数余子式</strong>（Algebraic Cofactor）是线性代数中的一个重要概念，它是计算行列式、求逆矩阵和解线性方程组的基础工具。</p>
@@ -489,7 +112,7 @@
 
             <!-- 定义与记号 -->
             <section id="definitions" class="content-section">
-                <h2 class="section-title">📝 定义与记号</h2>
+                <h2 class="section-title">定义与记号</h2>
                 
                 <h3>余子式 (Minor)</h3>
                 <p>对于 $n \times n$ 矩阵 $A$，元素 $a_{ij}$ 的余子式 $M_{ij}$ 是从矩阵 $A$ 中删除第 $i$ 行和第 $j$ 列后得到的 $(n-1) \times (n-1)$ 子矩阵的行列式。</p>
@@ -519,7 +142,7 @@
 
             <!-- 计算方法 -->
             <section id="calculation" class="content-section">
-                <h2 class="section-title">⚙️ 计算方法</h2>
+                <h2 class="section-title">计算方法</h2>
                 
                 <h3>步骤详解</h3>
                 <div class="steps-list">
@@ -561,7 +184,7 @@
 
             <!-- 性质与定理 -->
             <section id="properties" class="content-section">
-                <h2 class="section-title">🔍 性质与定理</h2>
+                <h2 class="section-title">性质与定理</h2>
                 
                 <h3>基本性质</h3>
                 
@@ -596,7 +219,7 @@
 
             <!-- 应用实例 -->
             <section id="applications" class="content-section">
-                <h2 class="section-title">💡 应用实例</h2>
+                <h2 class="section-title">应用实例</h2>
                 
                 <h3>1. 计算行列式</h3>
                 <div class="example-box">
@@ -652,48 +275,10 @@
                 </div>
             </div>
         </div>
+      </div>
+    </main>
+  </div>
 
-        <script>
-            // 主题切换
-            function toggleTheme() {
-                const html = document.documentElement;
-                const currentTheme = html.getAttribute("data-theme");
-                const newTheme = currentTheme === "dark" ? "light" : "dark";
-                html.setAttribute("data-theme", newTheme);
-                localStorage.setItem("portfolio-theme", newTheme);
-            }
-
-            // 返回顶部
-            function scrollToTop() {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            }
-
-            // 显示/隐藏返回顶部按钮
-            window.addEventListener('scroll', function() {
-                const backToTop = document.querySelector('.back-to-top');
-                if (window.pageYOffset > 300) {
-                    backToTop.classList.add('visible');
-                } else {
-                    backToTop.classList.remove('visible');
-                }
-            });
-
-            // 平滑滚动到锚点
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    }
-                });
-            });
-        </script>
-    </body>
+  <button class="backtop" id="backTop" type="button" aria-label="返回顶部">↑</button>
+</body>
 </html>
