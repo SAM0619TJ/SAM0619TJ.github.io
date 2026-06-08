@@ -18,9 +18,11 @@
   <script type="module">
     import { initSidebarUI, initThemeOnLoad, initGroups } from "./assets/ui.js";
     import { buildMathToc } from "./study_note/math/math.js";
+    import { buildDsToc } from "./study_note/data_struct/data_struct.js";
     initThemeOnLoad();
     initSidebarUI();
     window.__buildMathToc = buildMathToc;
+    window.__buildDsToc = buildDsToc;
     window.__initGroups = initGroups;
   </script>
 
@@ -97,6 +99,34 @@
       { label: "性能优化", href: "./md.html?file=study_note/shader/reference/performance.md" },
     ];
 
+    const DATA_STRUCT_NAV = [
+      { label: "数据结构索引", href: "./study_note/data_struct/index.html" },
+      { label: "速查表", href: "./md.html?file=study_note/data_struct/速查.md" },
+      { label: "STL 容器选型", href: "./md.html?file=study_note/data_struct/20_STL容器选型.md" },
+      { label: "复杂度分析", href: "./md.html?file=study_note/data_struct/00_复杂度分析.md" },
+      { label: "分类与内存模型", href: "./md.html?file=study_note/data_struct/01_分类与内存模型.md" },
+      { label: "基本数据类型", href: "./md.html?file=study_note/data_struct/02_基本数据类型.md" },
+      { label: "排序算法", href: "./md.html?file=study_note/data_struct/03_排序算法.md" },
+      { label: "数组与链表", href: "./md.html?file=study_note/data_struct/04_数组与链表.md" },
+      { label: "栈与队列", href: "./md.html?file=study_note/data_struct/05_栈与队列.md" },
+      { label: "哈希表", href: "./md.html?file=study_note/data_struct/06_哈希表.md" },
+      { label: "单调栈与单调队列", href: "./md.html?file=study_note/data_struct/11_单调栈与单调队列.md" },
+      { label: "二分查找", href: "./md.html?file=study_note/data_struct/12_二分查找.md" },
+      { label: "LRU 缓存", href: "./md.html?file=study_note/data_struct/15_LRU缓存.md" },
+      { label: "字符串匹配 KMP", href: "./md.html?file=study_note/data_struct/21_字符串匹配.md" },
+      { label: "树与二叉搜索树", href: "./md.html?file=study_note/data_struct/07_树与二叉搜索树.md" },
+      { label: "堆", href: "./md.html?file=study_note/data_struct/08_堆.md" },
+      { label: "Trie 字典树", href: "./md.html?file=study_note/data_struct/13_Trie字典树.md" },
+      { label: "AVL 与平衡树", href: "./md.html?file=study_note/data_struct/14_AVL与平衡树.md" },
+      { label: "跳表", href: "./md.html?file=study_note/data_struct/19_跳表.md" },
+      { label: "图", href: "./md.html?file=study_note/data_struct/09_图.md" },
+      { label: "并查集", href: "./md.html?file=study_note/data_struct/10_并查集.md" },
+      { label: "拓扑排序与最短路", href: "./md.html?file=study_note/data_struct/18_拓扑排序与最短路.md" },
+      { label: "线段树", href: "./md.html?file=study_note/data_struct/16_线段树.md" },
+      { label: "树状数组", href: "./md.html?file=study_note/data_struct/17_树状数组.md" },
+      { label: "空间索引与加速结构", href: "./md.html?file=study_note/data_struct/22_空间索引与加速结构.md" },
+    ];
+
     const MATH_NAV = [
       { label: "数学索引", href: "./study_note/math/index.html" },
       { label: "公式速查", href: "./md.html?file=study_note/math/公式速查.md" },
@@ -128,8 +158,12 @@
       return file.startsWith("study_note/shader/") && file.endsWith(".md");
     }
 
+    function isDataStructFile(file) {
+      return file.startsWith("study_note/data_struct/") && file.endsWith(".md");
+    }
+
     function isStudyNoteFile(file) {
-      return isMathFile(file) || isShaderFile(file);
+      return isMathFile(file) || isShaderFile(file) || isDataStructFile(file);
     }
 
     function loadMathJax() {
@@ -222,13 +256,14 @@
 
       if (!file) {
         meta.textContent = "未指定文件";
-        md.innerHTML = "<p class=\"muted\">用法：<code>md.html?file=study_note/math/公式速查.md</code> 或 <code>md.html?file=study_note/shader/速查.md</code></p>";
+        md.innerHTML = "<p class=\"muted\">用法：<code>md.html?file=study_note/math/公式速查.md</code>、<code>md.html?file=study_note/data_struct/速查.md</code> 或 <code>md.html?file=study_note/shader/速查.md</code></p>";
         openRaw.removeAttribute("href");
         return;
       }
 
       const math = isMathFile(file);
       const shader = isShaderFile(file);
+      const dataStruct = isDataStructFile(file);
       const study = isStudyNoteFile(file);
       if (noteCss) noteCss.disabled = !study;
       if (study) md.classList.add("math-body");
@@ -239,6 +274,7 @@
 
       if (math) setupStudySidebar(file, MATH_NAV, "数学笔记");
       if (shader) setupStudySidebar(file, SHADER_NAV, "Shader 笔记");
+      if (dataStruct) setupStudySidebar(file, DATA_STRUCT_NAV, "数据结构笔记");
 
       try {
         const resp = await fetch("./" + file);
@@ -251,8 +287,9 @@
         if (study) {
           await loadMathJax();
           if (window.MathJax?.typesetPromise) await MathJax.typesetPromise([md]);
-          if (window.__buildMathToc) {
-            window.__buildMathToc(md, document.getElementById("sidebarNav"));
+          const buildToc = dataStruct ? window.__buildDsToc : window.__buildMathToc;
+          if (buildToc) {
+            buildToc(md, document.getElementById("sidebarNav"));
             if (window.__initGroups) window.__initGroups();
           }
         }

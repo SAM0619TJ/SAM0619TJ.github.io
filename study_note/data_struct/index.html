@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
+  <title>数据结构笔记索引 | Miyako</title>
+  <meta name="description" content="按关键词快速查找数据结构知识，C++17 实现。" />
+  <link rel="stylesheet" href="../../assets/ui.css" />
+  <link rel="stylesheet" href="./data_struct.css" />
+  <script type="module">
+    import { initSidebarUI } from "../../assets/ui.js";
+    import { initDsIndexSearch } from "./data_struct.js";
+    initSidebarUI();
+    initDsIndexSearch();
+  </script>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="打开菜单">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <div>
+          <div class="title">数据结构笔记</div>
+          <div class="meta">知识索引 · C++17</div>
+        </div>
+        <button class="iconbtn" type="button" id="themeBtn" aria-label="切换主题">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
+      </div>
+
+      <nav class="nav" aria-label="侧边栏导航">
+        <a href="../../orgin.html">返回首页</a>
+        <a href="./index.html" class="is-active">数据结构索引</a>
+        <a href="../../md.html?file=study_note/data_struct/速查.md">速查表</a>
+
+        <div class="group" data-open="true">
+          <button type="button" data-toggle>基础 <span class="chev" aria-hidden="true"></span></button>
+          <div class="submenu">
+            <a href="../../md.html?file=study_note/data_struct/00_复杂度分析.md">复杂度分析</a>
+            <a href="../../md.html?file=study_note/data_struct/01_分类与内存模型.md">分类与内存模型</a>
+            <a href="../../md.html?file=study_note/data_struct/02_基本数据类型.md">基本数据类型</a>
+            <a href="../../md.html?file=study_note/data_struct/03_排序算法.md">排序算法</a>
+          </div>
+        </div>
+
+        <div class="group" data-open="true">
+          <button type="button" data-toggle>线性结构 <span class="chev" aria-hidden="true"></span></button>
+          <div class="submenu">
+            <a href="../../md.html?file=study_note/data_struct/04_数组与链表.md">数组与链表</a>
+            <a href="../../md.html?file=study_note/data_struct/05_栈与队列.md">栈与队列</a>
+            <a href="../../md.html?file=study_note/data_struct/06_哈希表.md">哈希表</a>
+            <a href="../../md.html?file=study_note/data_struct/11_单调栈与单调队列.md">单调栈与单调队列</a>
+            <a href="../../md.html?file=study_note/data_struct/12_二分查找.md">二分查找</a>
+            <a href="../../md.html?file=study_note/data_struct/15_LRU缓存.md">LRU 缓存</a>
+            <a href="../../md.html?file=study_note/data_struct/21_字符串匹配.md">字符串匹配 KMP</a>
+          </div>
+        </div>
+
+        <div class="group" data-open="true">
+          <button type="button" data-toggle>树与堆 <span class="chev" aria-hidden="true"></span></button>
+          <div class="submenu">
+            <a href="../../md.html?file=study_note/data_struct/07_树与二叉搜索树.md">树与二叉搜索树</a>
+            <a href="../../md.html?file=study_note/data_struct/08_堆.md">堆</a>
+            <a href="../../md.html?file=study_note/data_struct/13_Trie字典树.md">Trie 字典树</a>
+            <a href="../../md.html?file=study_note/data_struct/14_AVL与平衡树.md">AVL 与平衡树</a>
+            <a href="../../md.html?file=study_note/data_struct/19_跳表.md">跳表</a>
+          </div>
+        </div>
+
+        <div class="group" data-open="true">
+          <button type="button" data-toggle>图与连通 <span class="chev" aria-hidden="true"></span></button>
+          <div class="submenu">
+            <a href="../../md.html?file=study_note/data_struct/09_图.md">图</a>
+            <a href="../../md.html?file=study_note/data_struct/10_并查集.md">并查集</a>
+            <a href="../../md.html?file=study_note/data_struct/18_拓扑排序与最短路.md">拓扑排序与最短路</a>
+          </div>
+        </div>
+
+        <div class="group" data-open="true">
+          <button type="button" data-toggle>区间与进阶 <span class="chev" aria-hidden="true"></span></button>
+          <div class="submenu">
+            <a href="../../md.html?file=study_note/data_struct/16_线段树.md">线段树</a>
+            <a href="../../md.html?file=study_note/data_struct/17_树状数组.md">树状数组</a>
+            <a href="../../md.html?file=study_note/data_struct/20_STL容器选型.md">STL 容器选型</a>
+          </div>
+        </div>
+
+        <div class="group" data-open="true">
+          <button type="button" data-toggle>空间加速 <span class="chev" aria-hidden="true"></span></button>
+          <div class="submenu">
+            <a href="../../md.html?file=study_note/data_struct/22_空间索引与加速结构.md">四叉树 · KD · BSP · BVH</a>
+          </div>
+        </div>
+      </nav>
+    </aside>
+
+    <main class="content" id="main">
+      <div class="wrap">
+        <section class="card reveal">
+          <h1>数据结构笔记</h1>
+          <p class="muted">共 23 篇：基础 · 线性 · 树 · 图 · 区间 · 空间加速 · STL。每篇含速查卡、C++17 代码、复杂度与易错点。</p>
+          <a class="ds-pin" href="../../md.html?file=study_note/data_struct/速查.md">优先查阅：数据结构速查表</a>
+          <input class="ds-index-search" id="dsSearch" type="search" placeholder="搜索：BVH、四叉树、KD-tree、AABB、KMP、线段树…" autocomplete="off" />
+        </section>
+
+        <section class="ds-cat">
+          <h2>速查</h2>
+          <article class="ds-entry" data-keywords="速查 复杂度 API 对照">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/速查.md">数据结构速查表</a></div>
+            <p class="summary">全部主题的操作复杂度、图算法、排序与选型口诀。</p>
+            <div class="ds-kw"><span>速查</span><span>复杂度</span></div>
+          </article>
+          <article class="ds-entry" data-keywords="STL vector map set deque 选型 容器">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/20_STL容器选型.md">STL 容器选型</a></div>
+            <p class="summary">序列/关联容器对照与决策树。</p>
+            <div class="ds-kw"><span>STL</span><span>选型</span></div>
+          </article>
+        </section>
+
+        <section class="ds-cat">
+          <h2>基础</h2>
+          <article class="ds-entry" data-keywords="复杂度 大O 均摊 空间">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/00_复杂度分析.md">复杂度分析</a></div>
+            <p class="summary">时间/空间复杂度推算与权衡。</p>
+            <div class="ds-kw"><span>大O</span></div>
+          </article>
+          <article class="ds-entry" data-keywords="分类 逻辑 物理 线性 内存">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/01_分类与内存模型.md">分类与内存模型</a></div>
+            <p class="summary">线性与非线性、连续与分散存储。</p>
+            <div class="ds-kw"><span>分类</span></div>
+          </article>
+          <article class="ds-entry" data-keywords="int long long 补码 浮点 char">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/02_基本数据类型.md">基本数据类型</a></div>
+            <p class="summary">C++ 类型宽度、补码与溢出注意。</p>
+            <div class="ds-kw"><span>类型</span></div>
+          </article>
+          <article class="ds-entry" data-keywords="排序 快排 归并 堆排序 稳定">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/03_排序算法.md">排序算法</a></div>
+            <p class="summary">冒泡/插入/快排/归并/堆排与 STL。</p>
+            <div class="ds-kw"><span>排序</span><span>快排</span></div>
+          </article>
+        </section>
+
+        <section class="ds-cat">
+          <h2>线性结构</h2>
+          <article class="ds-entry" data-keywords="数组 链表 vector 双向 环形">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/04_数组与链表.md">数组与链表</a></div>
+            <p class="summary">vector、单/双向链表、环检测。</p>
+            <div class="ds-kw"><span>vector</span><span>链表</span></div>
+          </article>
+          <article class="ds-entry" data-keywords="栈 队列 deque LIFO FIFO">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/05_栈与队列.md">栈与队列</a></div>
+            <p class="summary">STL、双实现、环形队列、表达式求值。</p>
+            <div class="ds-kw"><span>栈</span><span>队列</span></div>
+          </article>
+          <article class="ds-entry" data-keywords="哈希 unordered_map 冲突 开放寻址">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/06_哈希表.md">哈希表</a></div>
+            <p class="summary">链地址、unordered_set、自定义哈希。</p>
+            <div class="ds-kw"><span>哈希</span></div>
+          </article>
+          <article class="ds-entry" data-keywords="单调栈 单调队列 滑动窗口 下一个更大">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/11_单调栈与单调队列.md">单调栈与单调队列</a></div>
+            <p class="summary">柱状图矩形、滑动窗口最大值。</p>
+            <div class="ds-kw"><span>单调栈</span></div>
+          </article>
+          <article class="ds-entry" data-keywords="二分 lower_bound upper_bound 二分答案">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/12_二分查找.md">二分查找</a></div>
+            <p class="summary">标准二分、边界、二分答案模板。</p>
+            <div class="ds-kw"><span>二分</span></div>
+          </article>
+          <article class="ds-entry" data-keywords="LRU 缓存 哈希 双向链表">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/15_LRU缓存.md">LRU 缓存</a></div>
+            <p class="summary">list + unordered_map 经典设计题。</p>
+            <div class="ds-kw"><span>LRU</span></div>
+          </article>
+          <article class="ds-entry" data-keywords="KMP 字符串 子串 next 前缀函数">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/21_字符串匹配.md">字符串匹配 KMP</a></div>
+            <p class="summary">next 数组与 O(n+m) 匹配。</p>
+            <div class="ds-kw"><span>KMP</span></div>
+          </article>
+        </section>
+
+        <section class="ds-cat">
+          <h2>树与堆</h2>
+          <article class="ds-entry" data-keywords="二叉树 BST 遍历 中序">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/07_树与二叉搜索树.md">树与二叉搜索树</a></div>
+            <p class="summary">四种遍历、BST 增删查、迭代中序。</p>
+            <div class="ds-kw"><span>BST</span></div>
+          </article>
+          <article class="ds-entry" data-keywords="堆 priority_queue Top-K 堆排序">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/08_堆.md">堆</a></div>
+            <p class="summary">上浮下沉、建堆、Top-K、堆排序。</p>
+            <div class="ds-kw"><span>堆</span></div>
+          </article>
+          <article class="ds-entry" data-keywords="Trie 字典树 前缀 01Trie">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/13_Trie字典树.md">Trie 字典树</a></div>
+            <p class="summary">前缀检索、01 Trie 最大异或。</p>
+            <div class="ds-kw"><span>Trie</span></div>
+          </article>
+          <article class="ds-entry" data-keywords="AVL 红黑树 旋转 平衡 map">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/14_AVL与平衡树.md">AVL 与平衡树</a></div>
+            <p class="summary">旋转、红黑树与 std::map。</p>
+            <div class="ds-kw"><span>AVL</span><span>红黑树</span></div>
+          </article>
+          <article class="ds-entry" data-keywords="跳表 skip list Redis 有序">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/19_跳表.md">跳表</a></div>
+            <p class="summary">多层链表、期望 O(log n) 查找。</p>
+            <div class="ds-kw"><span>跳表</span></div>
+          </article>
+        </section>
+
+        <section class="ds-cat">
+          <h2>图与连通</h2>
+          <article class="ds-entry" data-keywords="图 BFS DFS 邻接表">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/09_图.md">图</a></div>
+            <p class="summary">表示、遍历、岛屿问题。</p>
+            <div class="ds-kw"><span>BFS</span><span>DFS</span></div>
+          </article>
+          <article class="ds-entry" data-keywords="并查集 union-find 路径压缩 Kruskal">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/10_并查集.md">并查集</a></div>
+            <p class="summary">动态连通、实现演进、渗透应用。</p>
+            <div class="ds-kw"><span>并查集</span></div>
+          </article>
+          <article class="ds-entry" data-keywords="拓扑排序 Dijkstra 最短路 DAG">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/18_拓扑排序与最短路.md">拓扑排序与最短路</a></div>
+            <p class="summary">Kahn 拓扑、Dijkstra 堆优化。</p>
+            <div class="ds-kw"><span>Dijkstra</span><span>拓扑</span></div>
+          </article>
+        </section>
+
+        <section class="ds-cat">
+          <h2>区间与进阶</h2>
+          <article class="ds-entry" data-keywords="线段树 区间查询 懒标记">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/16_线段树.md">线段树</a></div>
+            <p class="summary">区间和、单点/区间修改、懒标记。</p>
+            <div class="ds-kw"><span>线段树</span></div>
+          </article>
+          <article class="ds-entry" data-keywords="树状数组 Fenwick BIT lowbit 逆序对">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/17_树状数组.md">树状数组</a></div>
+            <p class="summary">前缀和、单点加、逆序对应用。</p>
+            <div class="ds-kw"><span>BIT</span></div>
+          </article>
+        </section>
+
+        <section class="ds-cat">
+          <h2>空间加速</h2>
+          <article class="ds-entry" data-keywords="四叉树 八叉树 KD-tree BSP BVH AABB 光线追踪 碰撞 broad phase 包围盒">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/22_空间索引与加速结构.md">空间索引与加速结构</a></div>
+            <p class="summary">AABB、四叉树、KD-tree、BSP-tree、BVH 与选型指南。</p>
+            <div class="ds-kw"><span>四叉树</span><span>BVH</span><span>KD-tree</span><span>AABB</span></div>
+          </article>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <button class="backtop" id="backTop" type="button" aria-label="返回顶部">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+  </button>
+</body>
+</html>
