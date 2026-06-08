@@ -22,7 +22,9 @@ python3 -m http.server 8000
 - `hobbies/`：兴趣
 - `life_goals/`：目标/计划
 - `robot_engineering/`：机器人/嵌入式相关记录
-- `study_note/`：学习笔记（数学、命令行等）
+- `study_note/`：学习笔记（数学、Shader、命令行等）
+- `study_note/math/`：线性代数笔记索引
+- `study_note/shader/`：GLSL / 图形着色器笔记索引
 
 ## 说明
 

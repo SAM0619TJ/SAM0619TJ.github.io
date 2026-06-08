@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
+  <title>数学笔记索引 | Miyako</title>
+  <meta name="description" content="按关键词快速查找线性代数等数学知识。" />
+  <link rel="stylesheet" href="../../assets/ui.css" />
+  <link rel="stylesheet" href="./math.css" />
+  <script type="module">
+    import { initSidebarUI } from "../../assets/ui.js";
+    import { initMathIndexSearch } from "./math.js";
+    initSidebarUI();
+    initMathIndexSearch();
+  </script>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="打开菜单">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <div>
+          <div class="title">数学笔记</div>
+          <div class="meta">知识索引</div>
+        </div>
+        <button class="iconbtn" type="button" id="themeBtn" aria-label="切换主题">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
+      </div>
+
+      <nav class="nav" aria-label="侧边栏导航">
+        <a href="../../orgin.html">返回首页</a>
+        <a href="./index.html" class="is-active">数学索引</a>
+        <a href="../../md.html?file=study_note/math/公式速查.md">公式速查</a>
+
+        <div class="group" data-open="true">
+          <button type="button" data-toggle>
+            基础理论
+            <span class="chev" aria-hidden="true"></span>
+          </button>
+          <div class="submenu">
+            <a href="../../md.html?file=study_note/math/向量空间与子空间.md">向量空间与子空间</a>
+            <a href="../../md.html?file=study_note/math/线性变换.md">线性变换</a>
+            <a href="../../md.html?file=study_note/math/矩阵的秩.md">矩阵的秩</a>
+          </div>
+        </div>
+
+        <div class="group" data-open="true">
+          <button type="button" data-toggle>
+            矩阵运算
+            <span class="chev" aria-hidden="true"></span>
+          </button>
+          <div class="submenu">
+            <a href="../../md.html?file=study_note/math/行列式.md">行列式</a>
+            <a href="../../md.html?file=study_note/math/余子式.md">余子式</a>
+            <a href="../../md.html?file=study_note/math/逆矩阵.md">逆矩阵</a>
+            <a href="../../md.html?file=study_note/math/线性方程组.md">线性方程组</a>
+            <a href="../../md.html?file=study_note/math/克拉默法则.md">克拉默法则</a>
+          </div>
+        </div>
+
+        <div class="group" data-open="true">
+          <button type="button" data-toggle>
+            特征与标准形
+            <span class="chev" aria-hidden="true"></span>
+          </button>
+          <div class="submenu">
+            <a href="../../md.html?file=study_note/math/特征值与特征向量.md">特征值与特征向量</a>
+            <a href="../../md.html?file=study_note/math/相似矩阵与对角化.md">相似矩阵与对角化</a>
+            <a href="../../md.html?file=study_note/math/若尔当标准形.md">若尔当标准形</a>
+            <a href="../../md.html?file=study_note/math/二次型.md">二次型</a>
+            <a href="../../md.html?file=study_note/math/正定矩阵.md">正定矩阵</a>
+          </div>
+        </div>
+
+        <div class="group" data-open="true">
+          <button type="button" data-toggle>
+            分解与正交
+            <span class="chev" aria-hidden="true"></span>
+          </button>
+          <div class="submenu">
+            <a href="../../md.html?file=study_note/math/正交性.md">正交性</a>
+            <a href="../../md.html?file=study_note/math/QR分解.md">QR 分解</a>
+            <a href="../../md.html?file=study_note/math/LU分解.md">LU 分解</a>
+            <a href="../../md.html?file=study_note/math/Cholesky分解.md">Cholesky 分解</a>
+            <a href="../../md.html?file=study_note/math/SVD奇异值分解.md">SVD 奇异值分解</a>
+          </div>
+        </div>
+      </nav>
+    </aside>
+
+    <main class="content" id="main">
+      <div class="wrap">
+        <section class="card reveal">
+          <h1>数学笔记</h1>
+          <p class="muted">按关键词搜索，或从分类进入。每篇笔记都包含「速查卡 → 定义 → 公式 → 例题 → 易错点」。</p>
+          <a class="math-pin" href="../../md.html?file=study_note/math/公式速查.md">优先查阅：公式速查表</a>
+          <input class="math-index-search" id="mathSearch" type="search" placeholder="搜索：QR、若尔当、二次型、正定、秩…" autocomplete="off" />
+        </section>
+
+        <section class="math-cat">
+          <h2>速查</h2>
+          <article class="math-entry" data-keywords="公式 速查 一览 查找 det 逆矩阵 特征值 SVD LU 正交">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/math/公式速查.md">公式速查表</a>
+            </div>
+            <p class="summary">全部 19 个主题的核心公式一页汇总。</p>
+            <div class="math-kw"><span>速查</span><span>公式</span></div>
+          </article>
+        </section>
+
+        <section class="math-cat">
+          <h2>基础理论</h2>
+
+          <article class="math-entry" data-keywords="向量空间 子空间 基 维数 秩 张成 线性无关 零空间 列空间">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/math/向量空间与子空间.md">向量空间与子空间</a>
+            </div>
+            <p class="summary">向量空间公理、子空间判定、基与维数、四个基本子空间。</p>
+            <div class="math-kw"><span>向量空间</span><span>子空间</span><span>秩</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="线性变换 linear transformation 核 像 矩阵表示 复合 基变换">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/math/线性变换.md">线性变换</a>
+            </div>
+            <p class="summary">线性映射定义、矩阵表示、核与像、复合与基变换。</p>
+            <div class="math-kw"><span>线性变换</span><span>核</span><span>像</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="秩 rank 主元 行阶梯形 满秩 秩零化度">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/math/矩阵的秩.md">矩阵的秩</a>
+            </div>
+            <p class="summary">秩的定义、求法、四个子空间维数、秩-零化度定理。</p>
+            <div class="math-kw"><span>秩</span><span>主元</span><span>阶梯形</span></div>
+          </article>
+        </section>
+
+        <section class="math-cat">
+          <h2>矩阵运算</h2>
+
+          <article class="math-entry" data-keywords="行列式 det 展开 拉普拉斯 三角矩阵 性质">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/math/行列式.md">行列式</a>
+            </div>
+            <p class="summary">定义、二阶/三阶公式、展开法则与常用性质。</p>
+            <div class="math-kw"><span>det</span><span>展开</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="余子式 代数余子式 minor cofactor 符号 Mij Aij">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/math/余子式.md">余子式与代数余子式</a>
+            </div>
+            <p class="summary">Minor / Cofactor 定义、符号棋盘、计算步骤。</p>
+            <div class="math-kw"><span>余子式</span><span>代数余子式</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="逆矩阵 可逆 伴随矩阵 adj 求逆 奇异">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/math/逆矩阵.md">逆矩阵</a>
+            </div>
+            <p class="summary">可逆条件、伴随矩阵法、二阶快捷公式。</p>
+            <div class="math-kw"><span>逆矩阵</span><span>伴随矩阵</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="线性方程组 高斯消元 秩 解 无穷多解 无解">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/math/线性方程组.md">线性方程组</a>
+            </div>
+            <p class="summary">矩阵形式、解的判定（秩）、高斯消元步骤。</p>
+            <div class="math-kw"><span>方程组</span><span>高斯消元</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="克拉默 Cramer 法则 唯一解">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/math/克拉默法则.md">克拉默法则</a>
+            </div>
+            <p class="summary">适用条件与逐未知数求解公式。</p>
+            <div class="math-kw"><span>克拉默</span><span>Cramer</span></div>
+          </article>
+        </section>
+
+        <section class="math-cat">
+          <h2>特征与标准形</h2>
+
+          <article class="math-entry" data-keywords="特征值 特征向量 eigenvalue eigenvector 对角化 特征多项式 谱">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/math/特征值与特征向量.md">特征值与特征向量</a>
+            </div>
+            <p class="summary">特征方程、对角化、迹与行列式、对称矩阵谱。</p>
+            <div class="math-kw"><span>特征值</span><span>特征向量</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="相似 对角化 过渡矩阵 可对角化 合同">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/math/相似矩阵与对角化.md">相似矩阵与对角化</a>
+            </div>
+            <p class="summary">$P^{-1}AP$、可对角化条件、对称矩阵正交对角化。</p>
+            <div class="math-kw"><span>相似</span><span>对角化</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="若尔当 Jordan 标准形 若尔当块 广义特征向量 不可对角化">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/math/若尔当标准形.md">若尔当标准形</a>
+            </div>
+            <p class="summary">$J_k(\lambda)$ 若尔当块、不可对角化矩阵的规范形。</p>
+            <div class="math-kw"><span>若尔当</span><span>Jordan</span><span>若尔当块</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="二次型 标准形 配方法 惯性定理 合同变换">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/math/二次型.md">二次型</a>
+            </div>
+            <p class="summary">$\mathbf{x}^TA\mathbf{x}$、配方、惯性定理、正定性判定。</p>
+            <div class="math-kw"><span>二次型</span><span>标准形</span><span>配方法</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="正定 半正定 Sylvester Cholesky 顺序主子式">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/math/正定矩阵.md">正定矩阵</a>
+            </div>
+            <p class="summary">正定/半正定定义、Sylvester 准则、与 Cholesky 的关系。</p>
+            <div class="math-kw"><span>正定</span><span>Sylvester</span></div>
+          </article>
+        </section>
+
+        <section class="math-cat">
+          <h2>分解与正交</h2>
+
+          <article class="math-entry" data-keywords="正交 内积 投影 Gram-Schmidt 标准正交基 正交补">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/math/正交性.md">正交性</a>
+            </div>
+            <p class="summary">内积、正交投影、Gram-Schmidt、最小二乘。</p>
+            <div class="math-kw"><span>正交</span><span>投影</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="QR分解 正交 上三角 Gram-Schmidt Householder 最小二乘">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/math/QR分解.md">QR 分解</a>
+            </div>
+            <p class="summary">$A=QR$、Gram-Schmidt 矩阵化、稳定最小二乘求解。</p>
+            <div class="math-kw"><span>QR</span><span>Gram-Schmidt</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="LU分解 三角矩阵 高斯消元 PA=LU 主元 回代 前代">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/math/LU分解.md">LU 分解</a>
+            </div>
+            <p class="summary">$A=LU$ 与 $PA=LU$、三角回代、与高斯消元的关系。</p>
+            <div class="math-kw"><span>LU</span><span>三角矩阵</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="Cholesky LL^T 正定 对称 分解">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/math/Cholesky分解.md">Cholesky 分解</a>
+            </div>
+            <p class="summary">对称正定 $A=LL^T$，计算量约为 LU 的一半。</p>
+            <div class="math-kw"><span>Cholesky</span><span>LL^T</span><span>正定</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="SVD 奇异值分解 奇异值 奇异向量 伪逆 低秩逼近 PCA">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/math/SVD奇异值分解.md">SVD 奇异值分解</a>
+            </div>
+            <p class="summary">$A=U\Sigma V^T$、伪逆、最优低秩逼近与应用。</p>
+            <div class="math-kw"><span>SVD</span><span>奇异值</span><span>伪逆</span></div>
+          </article>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <button class="backtop" id="backTop" type="button" aria-label="返回顶部">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+  </button>
+</body>
+</html>

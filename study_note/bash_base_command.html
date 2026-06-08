@@ -5,7 +5,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="light dark" />
-  <title>Bash 基础命令 | Kyoko 的学习笔记</title>
+  <title>Bash 基础命令 | Miyako 的学习笔记</title>
   <link rel="stylesheet" href="../assets/ui.css" />
 
   <!-- marked.js + highlight.js -->
@@ -31,7 +31,11 @@
 </head>
 <body>
   <div class="progress" id="progress"></div>
-  <button class="sidebar-toggle" id="sidebarToggle" type="button">菜单</button>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="打开菜单">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
 
   <div class="layout">
     <aside class="sidebar">
@@ -40,7 +44,9 @@
           <div class="title">学习笔记</div>
           <div class="meta">Bash 基础命令</div>
         </div>
-        <button class="iconbtn" type="button" id="themeBtn" aria-label="切换主题">主题</button>
+        <button class="iconbtn" type="button" id="themeBtn" aria-label="切换主题">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
       </div>
 
       <nav class="nav" aria-label="侧边栏导航">
@@ -53,8 +59,9 @@
           </button>
           <div class="submenu">
             <a href="./bash_base_command.html">Bash 基础命令</a>
-            <a href="./行列式_余子式.html">线性代数：余子式</a>
-            <a href="./逆矩阵.html">线性代数：逆矩阵</a>
+            <a href="./math/index.html">数学笔记索引</a>
+            <a href="./shader/index.html">Shader 笔记索引</a>
+            <a href="../md.html?file=study_note/shader/速查.md">Shader 速查</a>
           </div>
         </div>
 
@@ -77,7 +84,9 @@
     </main>
   </div>
 
-  <button class="backtop" id="backTop" type="button" aria-label="返回顶部">↑</button>
+  <button class="backtop" id="backTop" type="button" aria-label="返回顶部">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+  </button>
 
   <script>
     let currentLang = 'zh';

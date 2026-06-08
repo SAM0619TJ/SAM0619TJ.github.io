@@ -1,0 +1,179 @@
+/* Math notes — lookup-oriented layout */
+.math-index-search {
+  width: 100%;
+  padding: 12px 16px 12px 40px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius2);
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+  margin-bottom: 20px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%2352525b' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 14px center;
+}
+
+.math-index-search:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--ring);
+}
+
+.math-cat {
+  margin-bottom: 28px;
+}
+
+.math-cat h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.math-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius2);
+  background: var(--panel);
+  margin-bottom: 10px;
+  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+
+.math-entry:hover {
+  border-color: color-mix(in oklab, var(--brand) 35%, var(--border));
+  background: var(--brandBg);
+}
+
+.math-entry.hidden {
+  display: none;
+}
+
+.math-entry-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.math-entry a.title {
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.math-entry a.title:hover {
+  color: var(--brand);
+}
+
+.math-entry .summary {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.math-kw {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.math-kw span {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--panel2) 80%, transparent);
+  color: var(--muted);
+}
+
+.math-pin {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in oklab, var(--brand) 40%, var(--border));
+  background: var(--brandBg);
+  color: var(--brand);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+
+.math-pin:hover {
+  box-shadow: var(--shadow);
+}
+
+/* Rendered markdown math styles */
+#md.math-body blockquote {
+  border-left: 3px solid var(--brand);
+  background: var(--brandBg);
+  padding: 10px 16px;
+  margin: 0 0 20px;
+  border-radius: 0 var(--radius2) var(--radius2) 0;
+  font-size: 14px;
+}
+
+#md.math-body blockquote p {
+  margin: 0;
+}
+
+#md.math-body h2 {
+  margin-top: 2em;
+  padding-top: .5em;
+  border-top: 1px solid var(--border);
+  font-size: 1.2rem;
+}
+
+#md.math-body h2:first-of-type {
+  margin-top: 0;
+  border-top: none;
+  padding-top: 0;
+}
+
+#md.math-body h3 {
+  font-size: 1.05rem;
+  color: color-mix(in oklab, var(--text) 90%, var(--brand));
+}
+
+#md.math-body table {
+  font-size: 14px;
+  margin: 12px 0 20px;
+}
+
+#md.math-body th {
+  background: color-mix(in oklab, var(--panel2) 80%, var(--brandBg));
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+}
+
+#md.math-body td code,
+#md.math-body th code {
+  font-size: .88em;
+}
+
+#md.math-body .mjx-chtml {
+  font-size: 108% !important;
+}
+
+.math-toc a {
+  font-size: 13px;
+  color: color-mix(in oklab, var(--text) 78%, var(--muted));
+}
+
+.math-toc a:hover {
+  color: var(--brand);
+}

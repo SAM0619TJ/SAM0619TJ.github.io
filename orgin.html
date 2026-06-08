@@ -5,8 +5,8 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="light dark" />
-  <title>Kyoko | 作品与笔记</title>
-  <meta name="description" content="Kyoko 的作品与笔记主页。" />
+  <title>Miyako | 作品与笔记</title>
+  <meta name="description" content="Miyako 的作品与笔记主页。" />
   <link rel="stylesheet" href="./assets/ui.css" />
 
   <script type="module">
@@ -16,20 +16,26 @@
 </head>
 <body>
   <div class="progress" id="progress"></div>
-  <button class="sidebar-toggle" id="sidebarToggle" type="button">菜单</button>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="打开菜单">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
 
   <div class="layout">
     <aside class="sidebar">
       <div class="brand">
         <div>
-          <div class="title">Kyoko</div>
+          <div class="title">Miyako</div>
           <div class="meta">作品与笔记</div>
         </div>
-        <button class="iconbtn" type="button" id="themeBtn" aria-label="切换主题">主题</button>
+        <button class="iconbtn" type="button" id="themeBtn" aria-label="切换主题">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
       </div>
 
       <nav class="nav" aria-label="侧边栏导航">
-        <a href="./orgin.html">首页</a>
+        <a href="./orgin.html" class="is-active">首页</a>
 
         <div class="group" data-open="true">
           <button type="button" data-toggle>
@@ -37,8 +43,9 @@
             <span class="chev" aria-hidden="true"></span>
           </button>
           <div class="submenu">
-            <a href="./study_note/行列式_余子式.html">线性代数：余子式</a>
-            <a href="./study_note/逆矩阵.html">线性代数：逆矩阵</a>
+            <a href="./study_note/math/index.html">数学笔记索引</a>
+            <a href="./study_note/shader/index.html">Shader 笔记索引</a>
+            <a href="./md.html?file=study_note/shader/bridge/vulkan_engine_map.md">Vulkan 引擎地图</a>
             <a href="./study_note/bash_base_command.html">Shell：Bash 基础命令</a>
           </div>
         </div>
@@ -62,29 +69,34 @@
 
     <main class="content" id="main">
       <div class="wrap">
-        <section class="card">
-          <h1>你好，我是 Kyoko。</h1>
-          <p class="muted">这里放我的作品和笔记，主要是机器人/图形相关的学习记录。</p>
+        <section class="card hero reveal">
+          <span class="hero-badge">机器人 / 图形 / 嵌入式</span>
+          <h1>你好，我是 Miyako</h1>
+          <p class="muted">这里记录我的作品与学习笔记，主要围绕机器人视觉、实时渲染和嵌入式开发。</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#projects">查看作品</a>
+            <a class="btn btn-secondary" href="#notes">浏览笔记</a>
+          </div>
         </section>
 
-        <section class="card">
+        <section class="card reveal" id="projects">
           <h2>作品</h2>
-          <p class="muted">一些做过/在做的东西（持续更新）。</p>
+          <p class="muted">一些做过 / 在做的东西，持续更新中。</p>
 
           <div class="projects">
-            <article class="project">
+            <a class="project" href="./study_note/shader/index.html" style="text-decoration:none;color:inherit">
               <h3>3D 渲染引擎</h3>
-              <p>WebGL 的实时渲染练习：PBR、阴影、后处理。</p>
+              <p>WebGL 实时渲染练习：PBR 材质、阴影映射与后处理管线。</p>
               <div class="tags">
                 <span class="tag">WebGL</span>
                 <span class="tag">GLSL</span>
-                <span class="tag">Three.js</span>
+                <span class="tag">Shader</span>
               </div>
-            </article>
+            </a>
 
             <article class="project">
               <h3>RoboMaster 视觉</h3>
-              <p>检测/跟踪/自动瞄准方向的视觉实践。</p>
+              <p>检测、跟踪与自动瞄准方向的视觉算法实践。</p>
               <div class="tags">
                 <span class="tag">OpenCV</span>
                 <span class="tag">C++</span>
@@ -94,18 +106,52 @@
           </div>
         </section>
 
-        <section class="card">
+        <section class="card reveal" id="notes">
+          <h2>最近笔记</h2>
+          <p class="muted">从这里快速进入常用内容。</p>
+
+          <div class="quick-links">
+            <a class="quick-link" href="./study_note/math/index.html">
+              <span class="label">数学笔记</span>
+              <span class="desc">线性代数 · 可搜索索引</span>
+            </a>
+            <a class="quick-link" href="./study_note/shader/index.html">
+              <span class="label">Shader 笔记</span>
+              <span class="desc">GLSL · SDF · 光照 · 后处理</span>
+            </a>
+            <a class="quick-link" href="./study_note/bash_base_command.html">
+              <span class="label">Bash 基础命令</span>
+              <span class="desc">Shell 常用操作速查</span>
+            </a>
+            <a class="quick-link" href="./md.html?file=robot_engineering/linux_debug.md">
+              <span class="label">Linux 调试</span>
+              <span class="desc">嵌入式环境排错记录</span>
+            </a>
+            <a class="quick-link" href="./md.html?file=life_goals/goals.md">
+              <span class="label">目标计划</span>
+              <span class="desc">阶段性目标与进度</span>
+            </a>
+            <a class="quick-link" href="./md.html?file=diary/26_Jan.md">
+              <span class="label">日记</span>
+              <span class="desc">日常记录与随想</span>
+            </a>
+          </div>
+        </section>
+
+        <section class="card reveal">
           <h2>信息</h2>
           <div class="cols">
             <div class="pill">更新日期：<span class="muted" id="lastUpdated">—</span></div>
-            <div class="pill">预览：<span class="muted">python3 -m http.server 8000</span></div>
+            <div class="pill">本地预览：<span class="muted">python3 -m http.server 8000</span></div>
           </div>
         </section>
       </div>
     </main>
   </div>
 
-  <button class="backtop" id="backTop" type="button" aria-label="返回顶部">↑</button>
+  <button class="backtop" id="backTop" type="button" aria-label="返回顶部">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+  </button>
 
   <script>
     document.getElementById("lastUpdated").textContent =

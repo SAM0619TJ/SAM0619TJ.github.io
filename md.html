@@ -8,17 +8,20 @@
   <title>Markdown</title>
 
   <link rel="stylesheet" href="./assets/ui.css" />
+  <link rel="stylesheet" href="./study_note/math/math.css" id="noteCss" disabled />
 
-  <!-- marked.js + highlight.js -->
   <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github.min.css" id="highlight-light">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css" id="highlight-dark" disabled>
   <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
 
   <script type="module">
-    import { initSidebarUI, initThemeOnLoad } from "./assets/ui.js";
+    import { initSidebarUI, initThemeOnLoad, initGroups } from "./assets/ui.js";
+    import { buildMathToc } from "./study_note/math/math.js";
     initThemeOnLoad();
     initSidebarUI();
+    window.__buildMathToc = buildMathToc;
+    window.__initGroups = initGroups;
   </script>
 
   <style>
@@ -31,19 +34,25 @@
 </head>
 <body>
   <div class="progress" id="progress"></div>
-  <button class="sidebar-toggle" id="sidebarToggle" type="button">菜单</button>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="打开菜单">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
 
   <div class="layout">
     <aside class="sidebar">
       <div class="brand">
         <div>
-          <div class="title">Markdown</div>
+          <div class="title" id="sidebarTitle">Markdown</div>
           <div class="meta" id="fileMeta">—</div>
         </div>
-        <button class="iconbtn" type="button" id="themeBtn" aria-label="切换主题">主题</button>
+        <button class="iconbtn" type="button" id="themeBtn" aria-label="切换主题">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
       </div>
 
-      <nav class="nav" aria-label="侧边栏导航">
+      <nav class="nav" id="sidebarNav" aria-label="侧边栏导航">
         <a href="./orgin.html">返回首页</a>
         <a href="#" id="openRaw">打开原文件</a>
       </nav>
@@ -58,15 +67,127 @@
     </main>
   </div>
 
-  <button class="backtop" id="backTop" type="button" aria-label="返回顶部">↑</button>
+  <button class="backtop" id="backTop" type="button" aria-label="返回顶部">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+  </button>
 
   <script>
+    const SHADER_NAV = [
+      { label: "Shader 索引", href: "./study_note/shader/index.html" },
+      { label: "速查导航", href: "./md.html?file=study_note/shader/速查.md" },
+      { label: "坐标系统", href: "./md.html?file=study_note/shader/fundamentals/coordinate_systems.md" },
+      { label: "SDF 图元速查", href: "./md.html?file=study_note/shader/fundamentals/sdf_primitives.md" },
+      { label: "噪声家族", href: "./md.html?file=study_note/shader/fundamentals/noise.md" },
+      { label: "法线计算", href: "./md.html?file=study_note/shader/fundamentals/normal_computation.md" },
+      { label: "数学绘图", href: "./md.html?file=study_note/shader/rendering/math_draw.md" },
+      { label: "Raymarching", href: "./md.html?file=study_note/shader/rendering/raymarching.md" },
+      { label: "水体渲染", href: "./md.html?file=study_note/shader/rendering/water_rendering.md" },
+      { label: "辐射度量学", href: "./md.html?file=study_note/shader/lighting/radiometry.md" },
+      { label: "光照与着色模型", href: "./md.html?file=study_note/shader/lighting/lighting.md" },
+      { label: "色彩与调色板", href: "./md.html?file=study_note/shader/effects/color_palettes.md" },
+      { label: "缓动函数", href: "./md.html?file=study_note/shader/effects/easing_functions.md" },
+      { label: "2D 图案生成", href: "./md.html?file=study_note/shader/effects/pattern_generation.md" },
+      { label: "后处理效果", href: "./md.html?file=study_note/shader/effects/post_processing.md" },
+      { label: "管线心智模型", href: "./md.html?file=study_note/shader/bridge/pipeline_mental_model.md" },
+      { label: "Uniform 与纹理", href: "./md.html?file=study_note/shader/bridge/uniforms_and_textures.md" },
+      { label: "多 Pass 与 Framebuffer", href: "./md.html?file=study_note/shader/bridge/multipass_framebuffer.md" },
+      { label: "深度与摄像机", href: "./md.html?file=study_note/shader/bridge/depth_and_camera.md" },
+      { label: "Vulkan 引擎地图", href: "./md.html?file=study_note/shader/bridge/vulkan_engine_map.md" },
+      { label: "Shadertoy 移植", href: "./md.html?file=study_note/shader/reference/shadertoy_migration.md" },
+      { label: "性能优化", href: "./md.html?file=study_note/shader/reference/performance.md" },
+    ];
+
+    const MATH_NAV = [
+      { label: "数学索引", href: "./study_note/math/index.html" },
+      { label: "公式速查", href: "./md.html?file=study_note/math/公式速查.md" },
+      { label: "向量空间与子空间", href: "./md.html?file=study_note/math/向量空间与子空间.md" },
+      { label: "线性变换", href: "./md.html?file=study_note/math/线性变换.md" },
+      { label: "矩阵的秩", href: "./md.html?file=study_note/math/矩阵的秩.md" },
+      { label: "行列式", href: "./md.html?file=study_note/math/行列式.md" },
+      { label: "余子式", href: "./md.html?file=study_note/math/余子式.md" },
+      { label: "逆矩阵", href: "./md.html?file=study_note/math/逆矩阵.md" },
+      { label: "线性方程组", href: "./md.html?file=study_note/math/线性方程组.md" },
+      { label: "克拉默法则", href: "./md.html?file=study_note/math/克拉默法则.md" },
+      { label: "特征值与特征向量", href: "./md.html?file=study_note/math/特征值与特征向量.md" },
+      { label: "相似矩阵与对角化", href: "./md.html?file=study_note/math/相似矩阵与对角化.md" },
+      { label: "若尔当标准形", href: "./md.html?file=study_note/math/若尔当标准形.md" },
+      { label: "二次型", href: "./md.html?file=study_note/math/二次型.md" },
+      { label: "正定矩阵", href: "./md.html?file=study_note/math/正定矩阵.md" },
+      { label: "正交性", href: "./md.html?file=study_note/math/正交性.md" },
+      { label: "QR 分解", href: "./md.html?file=study_note/math/QR分解.md" },
+      { label: "LU 分解", href: "./md.html?file=study_note/math/LU分解.md" },
+      { label: "Cholesky 分解", href: "./md.html?file=study_note/math/Cholesky分解.md" },
+      { label: "SVD 奇异值分解", href: "./md.html?file=study_note/math/SVD奇异值分解.md" },
+    ];
+
+    function isMathFile(file) {
+      return file.startsWith("study_note/math/") && file.endsWith(".md");
+    }
+
+    function isShaderFile(file) {
+      return file.startsWith("study_note/shader/") && file.endsWith(".md");
+    }
+
+    function isStudyNoteFile(file) {
+      return isMathFile(file) || isShaderFile(file);
+    }
+
+    function loadMathJax() {
+      if (window.MathJax) return Promise.resolve();
+      return new Promise((resolve) => {
+        window.MathJax = {
+          tex: { inlineMath: [["$", "$"], ["\\(", "\\)"]], displayMath: [["$$", "$$"], ["\\[", "\\]"]] },
+          startup: { ready: () => { MathJax.startup.defaultReady(); resolve(); } },
+        };
+        const s = document.createElement("script");
+        s.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
+        s.async = true;
+        s.onerror = () => {
+          const f = document.createElement("script");
+          f.src = "https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js";
+          f.async = true;
+          f.onload = resolve;
+          document.head.appendChild(f);
+        };
+        s.onload = resolve;
+        document.head.appendChild(s);
+      });
+    }
+
+    function slugify(text) {
+      return text.toLowerCase().replace(/[^\w\u4e00-\u9fff]+/g, "-").replace(/^-|-$/g, "");
+    }
+
+    function addHeadingIds(container) {
+      const used = new Set();
+      container.querySelectorAll("h2, h3").forEach((h) => {
+        let id = slugify(h.textContent);
+        let n = 1;
+        while (used.has(id)) { id = slugify(h.textContent) + "-" + (n++); }
+        used.add(id);
+        h.id = id;
+      });
+    }
+
+    function setupStudySidebar(file, navItems, titleText) {
+      const nav = document.getElementById("sidebarNav");
+      const title = document.getElementById("sidebarTitle");
+      title.textContent = titleText;
+
+      const extra = document.createElement("div");
+      extra.innerHTML = navItems.map((item) => {
+        const active = item.href.includes(encodeURI(file)) ? " is-active" : "";
+        return `<a href="${item.href}"${active ? ` class="${active.trim()}"` : ""}>${item.label}</a>`;
+      }).join("");
+      nav.appendChild(extra);
+    }
+
     function syncHighlightTheme() {
-      const currentTheme = document.documentElement.getAttribute('data-theme');
-      const lightTheme = document.getElementById('highlight-light');
-      const darkTheme = document.getElementById('highlight-dark');
+      const currentTheme = document.documentElement.getAttribute("data-theme");
+      const lightTheme = document.getElementById("highlight-light");
+      const darkTheme = document.getElementById("highlight-dark");
       if (!lightTheme || !darkTheme) return;
-      if (currentTheme === 'dark') {
+      if (currentTheme === "dark") {
         lightTheme.disabled = true;
         darkTheme.disabled = false;
       } else {
@@ -87,45 +208,63 @@
     });
 
     function getFileParam() {
-      const file = new URLSearchParams(location.search).get('file') || '';
-      // basic safety: only allow relative paths without protocol
-      if (!file || file.includes('://') || file.startsWith('/') || file.includes('\\\\')) return '';
+      const file = new URLSearchParams(location.search).get("file") || "";
+      if (!file || file.includes("://") || file.startsWith("/") || file.includes("\\\\")) return "";
       return file;
     }
 
     async function load() {
       const file = getFileParam();
-      const meta = document.getElementById('fileMeta');
-      const md = document.getElementById('md');
-      const openRaw = document.getElementById('openRaw');
+      const meta = document.getElementById("fileMeta");
+      const md = document.getElementById("md");
+      const openRaw = document.getElementById("openRaw");
+      const noteCss = document.getElementById("noteCss");
 
       if (!file) {
-        meta.textContent = '未指定文件';
-        md.innerHTML = '<p class=\"muted\">用法：<code>md.html?file=robot_engineering/linux_debug.md</code></p>';
-        openRaw.removeAttribute('href');
+        meta.textContent = "未指定文件";
+        md.innerHTML = "<p class=\"muted\">用法：<code>md.html?file=study_note/math/公式速查.md</code> 或 <code>md.html?file=study_note/shader/速查.md</code></p>";
+        openRaw.removeAttribute("href");
         return;
       }
 
-      meta.textContent = file;
-      document.title = file;
-      openRaw.href = './' + file;
+      const math = isMathFile(file);
+      const shader = isShaderFile(file);
+      const study = isStudyNoteFile(file);
+      if (noteCss) noteCss.disabled = !study;
+      if (study) md.classList.add("math-body");
+
+      meta.textContent = file.split("/").pop();
+      document.title = meta.textContent;
+      openRaw.href = "./" + file;
+
+      if (math) setupStudySidebar(file, MATH_NAV, "数学笔记");
+      if (shader) setupStudySidebar(file, SHADER_NAV, "Shader 笔记");
 
       try {
-        const resp = await fetch('./' + file);
-        if (!resp.ok) throw new Error('文件加载失败');
+        const resp = await fetch("./" + file);
+        if (!resp.ok) throw new Error("文件加载失败");
         const text = await resp.text();
         md.innerHTML = marked.parse(text);
-        document.querySelectorAll('pre code').forEach((block) => hljs.highlightElement(block));
+        document.querySelectorAll("pre code").forEach((block) => hljs.highlightElement(block));
+        addHeadingIds(md);
+
+        if (study) {
+          await loadMathJax();
+          if (window.MathJax?.typesetPromise) await MathJax.typesetPromise([md]);
+          if (window.__buildMathToc) {
+            window.__buildMathToc(md, document.getElementById("sidebarNav"));
+            if (window.__initGroups) window.__initGroups();
+          }
+        }
       } catch (e) {
-        md.innerHTML = '<p style=\"color:#ef4444\">内容加载失败：' + (e && e.message ? e.message : String(e)) + '</p>';
+        md.innerHTML = "<p style=\"color:#ef4444\">内容加载失败：" + (e && e.message ? e.message : String(e)) + "</p>";
       }
     }
 
     syncHighlightTheme();
     const mo = new MutationObserver(syncHighlightTheme);
-    mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
     load();
   </script>
 </body>
 </html>
-

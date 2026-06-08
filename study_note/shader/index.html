@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
+  <title>Shader 笔记索引 | Miyako</title>
+  <meta name="description" content="GLSL / WebGL 着色器笔记，按关键词快速查找。" />
+  <link rel="stylesheet" href="../../assets/ui.css" />
+  <link rel="stylesheet" href="../math/math.css" />
+  <script type="module">
+    import { initSidebarUI } from "../../assets/ui.js";
+    import { initMathIndexSearch } from "../math/math.js";
+    initSidebarUI();
+    initMathIndexSearch();
+  </script>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="打开菜单">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <div>
+          <div class="title">Shader 笔记</div>
+          <div class="meta">GLSL / 图形</div>
+        </div>
+        <button class="iconbtn" type="button" id="themeBtn" aria-label="切换主题">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
+      </div>
+
+      <nav class="nav" aria-label="侧边栏导航">
+        <a href="../../orgin.html">返回首页</a>
+        <a href="./index.html" class="is-active">Shader 索引</a>
+        <a href="../../md.html?file=study_note/shader/速查.md">速查导航</a>
+
+        <div class="group" data-open="true">
+          <button type="button" data-toggle>
+            基础 (fundamentals)
+            <span class="chev" aria-hidden="true"></span>
+          </button>
+          <div class="submenu">
+            <a href="../../md.html?file=study_note/shader/fundamentals/coordinate_systems.md">坐标系统</a>
+            <a href="../../md.html?file=study_note/shader/fundamentals/sdf_primitives.md">SDF 图元速查</a>
+            <a href="../../md.html?file=study_note/shader/fundamentals/noise.md">噪声家族</a>
+            <a href="../../md.html?file=study_note/shader/fundamentals/normal_computation.md">法线计算</a>
+          </div>
+        </div>
+
+        <div class="group" data-open="true">
+          <button type="button" data-toggle>
+            渲染 (rendering)
+            <span class="chev" aria-hidden="true"></span>
+          </button>
+          <div class="submenu">
+            <a href="../../md.html?file=study_note/shader/rendering/math_draw.md">数学绘图</a>
+            <a href="../../md.html?file=study_note/shader/rendering/raymarching.md">Raymarching</a>
+            <a href="../../md.html?file=study_note/shader/rendering/water_rendering.md">水体渲染</a>
+          </div>
+        </div>
+
+        <div class="group" data-open="true">
+          <button type="button" data-toggle>
+            光照 (lighting)
+            <span class="chev" aria-hidden="true"></span>
+          </button>
+          <div class="submenu">
+            <a href="../../md.html?file=study_note/shader/lighting/radiometry.md">辐射度量学</a>
+            <a href="../../md.html?file=study_note/shader/lighting/lighting.md">光照与着色模型</a>
+          </div>
+        </div>
+
+        <div class="group" data-open="false">
+          <button type="button" data-toggle>
+            特效 (effects)
+            <span class="chev" aria-hidden="true"></span>
+          </button>
+          <div class="submenu">
+            <a href="../../md.html?file=study_note/shader/effects/color_palettes.md">色彩与调色板</a>
+            <a href="../../md.html?file=study_note/shader/effects/easing_functions.md">缓动函数</a>
+            <a href="../../md.html?file=study_note/shader/effects/pattern_generation.md">2D 图案生成</a>
+            <a href="../../md.html?file=study_note/shader/effects/post_processing.md">后处理效果</a>
+          </div>
+        </div>
+
+        <div class="group" data-open="true">
+          <button type="button" data-toggle>
+            桥接 (bridge)
+            <span class="chev" aria-hidden="true"></span>
+          </button>
+          <div class="submenu">
+            <a href="../../md.html?file=study_note/shader/bridge/pipeline_mental_model.md">管线心智模型</a>
+            <a href="../../md.html?file=study_note/shader/bridge/uniforms_and_textures.md">Uniform 与纹理</a>
+            <a href="../../md.html?file=study_note/shader/bridge/multipass_framebuffer.md">多 Pass 与 Framebuffer</a>
+            <a href="../../md.html?file=study_note/shader/bridge/depth_and_camera.md">深度与摄像机</a>
+            <a href="../../md.html?file=study_note/shader/bridge/vulkan_engine_map.md">Vulkan 引擎地图</a>
+          </div>
+        </div>
+
+        <div class="group" data-open="false">
+          <button type="button" data-toggle>
+            参考 (reference)
+            <span class="chev" aria-hidden="true"></span>
+          </button>
+          <div class="submenu">
+            <a href="../../md.html?file=study_note/shader/reference/shadertoy_migration.md">Shadertoy 移植</a>
+            <a href="../../md.html?file=study_note/shader/reference/performance.md">性能优化</a>
+          </div>
+        </div>
+      </nav>
+    </aside>
+
+    <main class="content" id="main">
+      <div class="wrap">
+        <section class="card reveal">
+          <h1>Shader 笔记</h1>
+          <p class="muted">GLSL 艺术向笔记 + Shadertoy → Vulkan 桥接。支持关键词搜索。</p>
+          <a class="math-pin" href="../../md.html?file=study_note/shader/速查.md">优先查阅：速查导航</a>
+          <input class="math-index-search" id="mathSearch" type="search" placeholder="搜索：SDF、PBR、噪声、Raymarching、后处理…" autocomplete="off" />
+        </section>
+
+        <section class="math-cat">
+          <h2>速查</h2>
+          <article class="math-entry" data-keywords="速查 导航 GLSL 查找">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/shader/速查.md">速查导航</a>
+            </div>
+            <p class="summary">按「我想做什么」定位 15 篇笔记，含常用 GLSL 片段。</p>
+            <div class="math-kw"><span>速查</span><span>GLSL</span></div>
+          </article>
+        </section>
+
+        <section class="math-cat">
+          <h2>基础 fundamentals</h2>
+
+          <article class="math-entry" data-keywords="坐标 UV NDC 屏幕空间 变换 glslViewer Shadertoy">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/shader/fundamentals/coordinate_systems.md">坐标系统</a>
+            </div>
+            <p class="summary">UV、NDC、屏幕空间与各工具坐标差异。</p>
+            <div class="math-kw"><span>坐标</span><span>UV</span><span>NDC</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="SDF 有向距离 圆 矩形 线段 图元 速查">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/shader/fundamentals/sdf_primitives.md">SDF 基本图元速查表</a>
+            </div>
+            <p class="summary">2D/3D SDF 公式大全，画形状必备。</p>
+            <div class="math-kw"><span>SDF</span><span>图元</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="噪声 Perlin Simplex Worley FBM 随机">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/shader/fundamentals/noise.md">噪声家族</a>
+            </div>
+            <p class="summary">Perlin、Simplex、Worley 与 FBM 组合。</p>
+            <div class="math-kw"><span>噪声</span><span>Perlin</span><span>FBM</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="法线 normal 梯度 有限差分 算法线">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/shader/fundamentals/normal_computation.md">法线计算</a>
+            </div>
+            <p class="summary">从 SDF / 高度场 / 三角面计算法线。</p>
+            <div class="math-kw"><span>法线</span><span>梯度</span></div>
+          </article>
+        </section>
+
+        <section class="math-cat">
+          <h2>渲染 rendering</h2>
+
+          <article class="math-entry" data-keywords="数学绘图 分形 Mandelbrot SDF 域扭曲 分形">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/shader/rendering/math_draw.md">数学绘图完全指南</a>
+            </div>
+            <p class="summary">SDF 几何、分形、噪声与域扭曲。</p>
+            <div class="math-kw"><span>分形</span><span>Mandelbrot</span><span>SDF</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="Raymarching 光线步进 距离场 体渲染">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/shader/rendering/raymarching.md">Raymarching 完全指南</a>
+            </div>
+            <p class="summary">步进算法、场景组合、软阴影与 AO。</p>
+            <div class="math-kw"><span>Raymarching</span><span>体渲染</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="水体 海洋 波浪 焦散 反射 折射">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/shader/rendering/water_rendering.md">水体渲染</a>
+            </div>
+            <p class="summary">水面几何、光照与焦散近似。</p>
+            <div class="math-kw"><span>水体</span><span>海洋</span></div>
+          </article>
+        </section>
+
+        <section class="math-cat">
+          <h2>光照 lighting</h2>
+
+          <article class="math-entry" data-keywords="辐射度 辐照度 辐射度量 radiometry 物理 光">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/shader/lighting/radiometry.md">辐射度量学</a>
+            </div>
+            <p class="summary">辐照度、辐射度、立体角等物理量。</p>
+            <div class="math-kw"><span>辐射度</span><span>物理</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="光照 Lambert Blinn Phong PBR NdotL 着色">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/shader/lighting/lighting.md">光照与着色模型</a>
+            </div>
+            <p class="summary">Lambert 到 PBR，每种模型附 GLSL 实现。</p>
+            <div class="math-kw"><span>PBR</span><span>Lambert</span><span>着色</span></div>
+          </article>
+        </section>
+
+        <section class="math-cat">
+          <h2>特效 effects</h2>
+
+          <article class="math-entry" data-keywords="色彩 palette gamma 线性 调色">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/shader/effects/color_palettes.md">色彩与调色板</a>
+            </div>
+            <p class="summary">palette 生成、gamma 与色彩空间。</p>
+            <div class="math-kw"><span>色彩</span><span>gamma</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="缓动 easing smoothstep 动画 插值">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/shader/effects/easing_functions.md">缓动函数</a>
+            </div>
+            <p class="summary">smoothstep 与各类 easing 曲线。</p>
+            <div class="math-kw"><span>缓动</span><span>smoothstep</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="图案 条纹 网格 重复 tile">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/shader/effects/pattern_generation.md">2D 图案生成</a>
+            </div>
+            <p class="summary">条纹、网格、重复与程序化纹理。</p>
+            <div class="math-kw"><span>图案</span><span>纹理</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="后处理 bloom 模糊 色调映射 post processing">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/shader/effects/post_processing.md">后处理效果</a>
+            </div>
+            <p class="summary">bloom、模糊、色调映射等屏幕后效。</p>
+            <div class="math-kw"><span>后处理</span><span>bloom</span></div>
+          </article>
+        </section>
+
+        <section class="math-cat">
+          <h2>桥接 bridge · Shadertoy → Vulkan</h2>
+
+          <article class="math-entry" data-keywords="管线 pipeline render pass mainImage Vulkan 引擎 心智模型">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/shader/bridge/pipeline_mental_model.md">管线心智模型</a>
+            </div>
+            <p class="summary">mainImage 在引擎里对应什么；全屏三角形与最小切片。</p>
+            <div class="math-kw"><span>管线</span><span>Vulkan</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="uniform UBO iTime iResolution iChannel descriptor 纹理">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/shader/bridge/uniforms_and_textures.md">Uniform 与纹理</a>
+            </div>
+            <p class="summary">iTime、iChannel0 在 Vulkan 里怎么传。</p>
+            <div class="math-kw"><span>uniform</span><span>iChannel</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="多Pass framebuffer FBO Bloom ping-pong Buffer">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/shader/bridge/multipass_framebuffer.md">多 Pass 与 Framebuffer</a>
+            </div>
+            <p class="summary">Buffer A/B 的引擎版；后处理链怎么接。</p>
+            <div class="math-kw"><span>多Pass</span><span>FBO</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="深度 depth Z-buffer 摄像机 camera MVP Raymarching">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/shader/bridge/depth_and_camera.md">深度与摄像机</a>
+            </div>
+            <p class="summary">ro/rd 与 MVP；Raymarching 与 mesh 共存。</p>
+            <div class="math-kw"><span>depth</span><span>camera</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="Vulkan 引擎 架构 模块 swapchain roadmap 里程碑">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/shader/bridge/vulkan_engine_map.md">Vulkan 小引擎模块地图</a>
+            </div>
+            <p class="summary">模块清单、目录结构、M0→M7 开发顺序。</p>
+            <div class="math-kw"><span>引擎</span><span>roadmap</span></div>
+          </article>
+        </section>
+
+        <section class="math-cat">
+          <h2>参考 reference</h2>
+
+          <article class="math-entry" data-keywords="Shadertoy glslViewer 移植 iResolution iTime iMouse">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/shader/reference/shadertoy_migration.md">Shadertoy 移植指南</a>
+            </div>
+            <p class="summary">uniform 对照、API 差异与常见坑。</p>
+            <div class="math-kw"><span>Shadertoy</span><span>移植</span></div>
+          </article>
+
+          <article class="math-entry" data-keywords="性能 优化 移动端 GLSL ES 帧率">
+            <div class="math-entry-head">
+              <a class="title" href="../../md.html?file=study_note/shader/reference/performance.md">性能优化指南</a>
+            </div>
+            <p class="summary">循环、纹理采样与移动端注意点。</p>
+            <div class="math-kw"><span>性能</span><span>优化</span></div>
+          </article>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <button class="backtop" id="backTop" type="button" aria-label="返回顶部">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+  </button>
+</body>
+</html>
