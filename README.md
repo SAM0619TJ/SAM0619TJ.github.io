@@ -25,6 +25,12 @@ python3 -m http.server 8000
 - `study_note/`：学习笔记（数学、Shader、命令行等）
 - `study_note/math/`：线性代数笔记索引
 - `study_note/shader/`：GLSL / 图形着色器笔记索引
+- `study_note/data_struct/`：数据结构笔记索引（C++17）
+
+## 外部仓库
+
+- RoboMaster 视觉（26 赛季）：[github.com/SPR-Algorithm/spr_vision_26](https://github.com/SPR-Algorithm/spr_vision_26)
+- RoboMaster 视觉（25 赛季）：[github.com/SPR-Algorithm/SPR-Vision-2025](https://github.com/SPR-Algorithm/SPR-Vision-2025)
 
 ## 说明
 

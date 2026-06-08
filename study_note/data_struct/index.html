@@ -95,7 +95,12 @@
         <div class="group" data-open="true">
           <button type="button" data-toggle>空间加速 <span class="chev" aria-hidden="true"></span></button>
           <div class="submenu">
-            <a href="../../md.html?file=study_note/data_struct/22_空间索引与加速结构.md">四叉树 · KD · BSP · BVH</a>
+            <a href="../../md.html?file=study_note/data_struct/22_空间索引概览.md">空间索引概览</a>
+            <a href="../../md.html?file=study_note/data_struct/22_AABB包围盒.md">AABB 包围盒</a>
+            <a href="../../md.html?file=study_note/data_struct/23_四叉树.md">四叉树</a>
+            <a href="../../md.html?file=study_note/data_struct/24_KD-tree.md">KD-tree</a>
+            <a href="../../md.html?file=study_note/data_struct/25_BSP-tree.md">BSP-tree</a>
+            <a href="../../md.html?file=study_note/data_struct/26_BVH.md">BVH</a>
           </div>
         </div>
       </nav>
@@ -105,7 +110,7 @@
       <div class="wrap">
         <section class="card reveal">
           <h1>数据结构笔记</h1>
-          <p class="muted">共 23 篇：基础 · 线性 · 树 · 图 · 区间 · 空间加速 · STL。每篇含速查卡、C++17 代码、复杂度与易错点。</p>
+          <p class="muted">共 28 篇：基础 · 线性 · 树 · 图 · 区间 · 空间加速（5 专题）· STL。每篇含速查卡、C++17 代码、复杂度与易错点。</p>
           <a class="ds-pin" href="../../md.html?file=study_note/data_struct/速查.md">优先查阅：数据结构速查表</a>
           <input class="ds-index-search" id="dsSearch" type="search" placeholder="搜索：BVH、四叉树、KD-tree、AABB、KMP、线段树…" autocomplete="off" />
         </section>
@@ -251,10 +256,35 @@
 
         <section class="ds-cat">
           <h2>空间加速</h2>
-          <article class="ds-entry" data-keywords="四叉树 八叉树 KD-tree BSP BVH AABB 光线追踪 碰撞 broad phase 包围盒">
-            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/22_空间索引与加速结构.md">空间索引与加速结构</a></div>
-            <p class="summary">AABB、四叉树、KD-tree、BSP-tree、BVH 与选型指南。</p>
-            <div class="ds-kw"><span>四叉树</span><span>BVH</span><span>KD-tree</span><span>AABB</span></div>
+          <article class="ds-entry" data-keywords="空间索引 概览 broad phase 选型">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/22_空间索引概览.md">空间索引概览</a></div>
+            <p class="summary">五类结构对照表与 broad/narrow phase 管线。</p>
+            <div class="ds-kw"><span>概览</span><span>选型</span></div>
+          </article>
+          <article class="ds-entry" data-keywords="AABB 包围盒 slab 射线 broad phase">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/22_AABB包围盒.md">AABB 包围盒</a></div>
+            <p class="summary">轴对齐粗测、相交与 slab 射线法。</p>
+            <div class="ds-kw"><span>AABB</span></div>
+          </article>
+          <article class="ds-entry" data-keywords="四叉树 八叉树 quadtree 范围查询">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/23_四叉树.md">四叉树</a></div>
+            <p class="summary">2D 四等分、范围查询与八叉树扩展。</p>
+            <div class="ds-kw"><span>四叉树</span></div>
+          </article>
+          <article class="ds-entry" data-keywords="KD-tree 最近邻 k-NN 点云">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/24_KD-tree.md">KD-tree</a></div>
+            <p class="summary">轴交替二分、最近邻与 k-NN。</p>
+            <div class="ds-kw"><span>KD-tree</span></div>
+          </article>
+          <article class="ds-entry" data-keywords="BSP 空间分割 画家算法 CSG">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/25_BSP-tree.md">BSP-tree</a></div>
+            <p class="summary">任意平面分割与室内绘制顺序。</p>
+            <div class="ds-kw"><span>BSP</span></div>
+          </article>
+          <article class="ds-entry" data-keywords="BVH 层次包围盒 SAH 光线追踪">
+            <div class="ds-entry-head"><a class="title" href="../../md.html?file=study_note/data_struct/26_BVH.md">BVH</a></div>
+            <p class="summary">物体层次 AABB、SAH 与光线遍历。</p>
+            <div class="ds-kw"><span>BVH</span></div>
           </article>
         </section>
       </div>
