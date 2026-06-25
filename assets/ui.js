@@ -5,6 +5,37 @@ function $$(sel, root = document) {
   return Array.from(root.querySelectorAll(sel));
 }
 
+const BACKGROUND_IMAGES = [
+  "../images/image1.jpg",
+  "../images/image2.jpg",
+  "../images/image3.jpg",
+  "../images/image4.jpg",
+  "../images/image5.jpg",
+  "../images/p1.png",
+];
+
+export function chooseRandomBackgroundImage(images = BACKGROUND_IMAGES, random = Math.random) {
+  if (!images.length) return "";
+  const raw = random();
+  const clamped = Math.max(0, Math.min(raw, 0.999999999));
+  return images[Math.floor(clamped * images.length)];
+}
+
+export function buildCssImageUrl(imagePath, baseUrl = import.meta.url) {
+  return `url("${new URL(imagePath, baseUrl).href}")`;
+}
+
+export function initRandomBackground({
+  doc = globalThis.document,
+  images = BACKGROUND_IMAGES,
+  random = Math.random,
+  baseUrl = import.meta.url,
+} = {}) {
+  const imagePath = chooseRandomBackgroundImage(images, random);
+  if (!imagePath || !doc?.documentElement?.style?.setProperty) return;
+  doc.documentElement.style.setProperty("--bg-image", buildCssImageUrl(imagePath, baseUrl));
+}
+
 const prefersReducedMotion = () =>
   window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -174,6 +205,7 @@ export function initReveal() {
 
 export function initSidebarUI() {
   initThemeOnLoad();
+  initRandomBackground();
   initThemeToggle();
   initGroups();
   initActiveLink();
