@@ -147,13 +147,31 @@ flowchart LR
 SAM0619TJ.github.io
 ```
 
+前置条件：**私有仓库发布 Pages 需要 GitHub Pro / Team**。仓库私有且未升级时，Pages 会保持不可用。
+
 部署步骤：
 
-1. 将仓库命名为 `SAM0619TJ.github.io`（当前远程仓库名是 `blog_prime`）。
-2. 在 GitHub 仓库进入 **Settings → Pages**。
-3. 将 **Source** 设为 **GitHub Actions**。
-4. 将开发分支合并或推送到 `main`。
-5. `.github/workflows/deploy.yml` 会自动安装依赖、构建 Astro、生成 Pagefind 索引并部署。
+1. 将仓库命名为 `SAM0619TJ.github.io`（当前远程仓库名是 `blog_prime`）。仓库改名后，`SAM0619TJ.github.io` 与 `/blog_prime/` 都没有历史站点，不需要做重定向。
+2. 同步本地远端地址：
+
+```bash
+git remote set-url origin https://github.com/SAM0619TJ/SAM0619TJ.github.io.git
+git remote -v
+```
+
+3. 在 GitHub 仓库进入 **Settings → Pages**。
+4. 将 **Source** 设为 **GitHub Actions**（不要选 Deploy from a branch，否则会与 workflow 冲突）。
+5. 将开发分支合并或推送到 `main`。
+6. `.github/workflows/deploy.yml` 会自动安装依赖、构建 Astro、生成 Pagefind 索引并部署。
+
+首次部署验收清单：
+
+- `https://sam0619tj.github.io/` 首页正常
+- `/blog/`、`/notes/`、`/projects/`、`/archive/`、`/tags/`、`/search/` 可访问
+- `/sitemap-index.xml`、`/rss.xml` 可访问
+- `/pagefind/pagefind.js` 可访问（搜索依赖它）
+- 任取一篇 legacy 笔记，正文内改写后的链接可跳转
+- 页面源码中的 `<link rel="canonical">` 与 `og:url` 指向 `https://sam0619tj.github.io/...`（若带 `/blog_prime/` 前缀说明部署到了项目站点，需要按上一段配置 `base`）
 
 日常更新只需：
 
@@ -164,6 +182,17 @@ git push
 ```
 
 如果继续使用 `blog_prime` 仓库并发布为项目站点，则地址会是 `https://sam0619tj.github.io/blog_prime/`。此时需要在 `astro.config.mjs` 增加 `base: '/blog_prime'`，并统一处理站内链接。当前实现按最终的用户主页仓库方案配置。
+
+需要注意，`base` 只会影响 `Astro.url`、`import.meta.env.BASE_URL` 和资源解析，**不会重写模板里手写的 `/blog/` 这类根绝对路径**。改用项目站点时至少要同步这些位置：
+
+- `src/layouts/BaseLayout.astro`：`/favicon.svg`、`/rss.xml`、默认 og 图路径
+- `src/layouts/PostLayout.astro`：标签链接与 `backHref`
+- `src/components/Header.astro`、`src/components/Footer.astro`：导航链接
+- `src/pages/**`：`index.astro`、`404.astro`、`about.astro`、`blog/[...page].astro`、`notes/index.astro`、`projects/index.astro`、`archive/index.astro`、`tags/**`
+- `src/pages/rss.xml.ts`：`items[].link`
+- `src/plugins/remark-legacy-content.mjs`：改写到 `/notes/...` 的链接
+- `scripts/check-links.mjs`：扫描 `dist/` 前先剥离 `base` 前缀，否则会全量误报断链
+- `public/robots.txt`：`Sitemap:` 地址
 
 ## 自定义域名
 
