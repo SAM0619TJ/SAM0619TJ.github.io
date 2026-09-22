@@ -1,0 +1,28 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  tech: string[];
+  status: string;
+  href: string;
+  github?: string;
+  documentation?: string;
+}
+const { title, description, tech, status, href, github, documentation } = Astro.props;
+---
+
+<article class="project-card">
+  <div class="project-heading">
+    <span class="status"><span aria-hidden="true"></span>{status}</span>
+    <h3><a href={href}>{title}</a></h3>
+  </div>
+  <p>{description}</p>
+  <ul class="tech-list" aria-label="技术栈">
+    {tech.map((item) => <li>{item}</li>)}
+  </ul>
+  <div class="card-actions">
+    <a href={href}>View project <span aria-hidden="true">→</span></a>
+    {github && <a href={github} target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>}
+    {documentation && <a href={documentation}>Documentation</a>}
+  </div>
+</article>

@@ -1,0 +1,33 @@
+---
+import type { GetStaticPaths, Page } from 'astro';
+import type { CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { byNewest, isPublished } from '../../utils/content';
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = byNewest((await getCollection('blog')).filter(isPublished));
+  return paginate(posts, { pageSize: 6 });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props as { page: Page<CollectionEntry<'blog'>> };
+---
+
+<BaseLayout title="Blog" description="机器人、计算机视觉、嵌入式系统与工程实践的完整技术文章。">
+  <div class="container page">
+    <header class="page-header">
+      <span class="eyebrow">Long-form writing</span>
+      <h1>Blog</h1>
+      <p>完整的技术文章：从原理、系统架构到可复现的工程实现。</p>
+    </header>
+    <div class="post-list">
+      {page.data.map((post) => <PostCard title={post.data.title} description={post.data.description} date={post.data.date} tags={post.data.tags} body={post.body} href={`/blog/${post.id}/`} />)}
+    </div>
+    {page.lastPage > 1 && <nav class="pagination" aria-label="博客分页">
+      {page.url.prev ? <a href={page.url.prev}>← Newer</a> : <span aria-disabled="true">← Newer</span>}
+      <span>{page.currentPage} / {page.lastPage}</span>
+      {page.url.next ? <a href={page.url.next}>Older →</a> : <span aria-disabled="true">Older →</span>}
+    </nav>}
+  </div>
+</BaseLayout>

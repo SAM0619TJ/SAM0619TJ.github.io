@@ -1,0 +1,47 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { byNewest, isPublished } from '../../utils/content';
+import { legacyMetadata } from '../../utils/legacy';
+import { slugifyTag } from '../../utils/content';
+
+const notes = byNewest((await getCollection('notes')).filter(isPublished)).map((note) => ({
+  title: note.data.title,
+  description: note.data.description,
+  date: note.data.date as Date | undefined,
+  tags: note.data.tags,
+  body: note.body,
+  category: note.data.category,
+  href: `/notes/${note.id}/`,
+}));
+const legacyNotes = (await getCollection('legacy')).map((note) => {
+  const meta = legacyMetadata(note);
+  return { ...meta, date: undefined, body: note.body, href: `/notes/${meta.slug}/` };
+}).sort((a, b) => a.title.localeCompare(b.title, 'zh-CN'));
+const allNotes = [...notes, ...legacyNotes];
+const groups = allNotes.reduce<Record<string, typeof allNotes>>((result, note) => {
+  (result[note.category] ??= []).push(note);
+  return result;
+}, {});
+const categories = Object.entries(groups).sort(([a], [b]) => a.localeCompare(b, 'zh-CN'));
+---
+
+<BaseLayout title="Notes" description="Linux、C++、ROS2、Docker、VIO 与算法的短技术记录和知识碎片。">
+  <div class="container page">
+    <header class="page-header">
+      <span class="eyebrow">Quick references</span>
+      <h1>Notes</h1>
+      <p>短记录、调试线索和命令速查。比博客更短，但同样可搜索、可版本管理。</p>
+    </header>
+    <div class="notes-groups">
+      {categories.map(([category, entries]) => <a class="category-card" href={`#category-${slugifyTag(category)}`}><span>{entries.length.toString().padStart(2, '0')} notes</span><strong>{category}</strong></a>)}
+    </div>
+    {categories.map(([category, entries]) => <section class="note-category-section" id={`category-${slugifyTag(category)}`}>
+      <div class="section-heading"><h2>{category}</h2><span>{entries.length} entries</span></div>
+      <div class="post-list">
+        {entries.map((note) => <PostCard title={note.title} description={note.description} date={note.date} tags={note.tags} body={note.body} category={note.category} kind="Note" href={note.href} />)}
+      </div>
+    </section>)}
+  </div>
+</BaseLayout>

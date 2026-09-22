@@ -1,0 +1,23 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import PostLayout from '../../layouts/PostLayout.astro';
+import { isPublished } from '../../utils/content';
+import { legacyMetadata } from '../../utils/legacy';
+export const getStaticPaths = (async () => {
+  const notes = (await getCollection('notes')).filter(isPublished);
+  const legacyNotes = await getCollection('legacy');
+  return [
+    ...notes.map((note) => ({ params: { id: note.id }, props: { note, legacy: false } })),
+    ...legacyNotes.map((note) => ({ params: { id: legacyMetadata(note).slug }, props: { note, legacy: true } })),
+  ];
+}) satisfies GetStaticPaths;
+const { note, legacy = false } = Astro.props as { note: CollectionEntry<'notes'> | CollectionEntry<'legacy'>; legacy?: boolean };
+const { Content, headings } = await render(note);
+const meta = legacy
+  ? legacyMetadata(note as CollectionEntry<'legacy'>)
+  : (note as CollectionEntry<'notes'>).data;
+---
+<PostLayout title={meta.title} description={meta.description} date={legacy ? undefined : (meta as CollectionEntry<'notes'>['data']).date} updated={legacy ? undefined : (meta as CollectionEntry<'notes'>['data']).updated} tags={meta.tags} body={note.body} headings={headings} eyebrow={`Note · ${meta.category}`} backHref="/notes/" backLabel="Back to Notes">
+  <Content />
+</PostLayout>

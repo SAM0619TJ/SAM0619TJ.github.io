@@ -1,0 +1,56 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { byNewest, isPublished } from '../utils/content';
+
+const posts = byNewest((await getCollection('blog')).filter(isPublished)).slice(0, 6);
+const notes = byNewest((await getCollection('notes')).filter(isPublished)).slice(0, 4);
+const projects = byNewest((await getCollection('projects')).filter(isPublished)).filter((project) => project.data.featured).slice(0, 4);
+---
+
+<BaseLayout>
+  <section class="hero container">
+    <div class="hero-inner">
+      <span class="eyebrow">Hello, I’m Miyako</span>
+      <h1>
+        Engineering systems that see, reason and move.
+        <span class="role">Robotics / Computer Vision / Embedded Systems</span>
+      </h1>
+      <p class="hero-description">Building autonomous systems, visual navigation and edge AI applications. 这里记录工程实践、学习笔记与正在构建的项目。</p>
+      <div class="button-row">
+        <a class="button primary" href="/blog/">Read the blog <span aria-hidden="true">→</span></a>
+        <a class="button" href="/projects/">View projects</a>
+        <a class="button" href="https://github.com/SAM0619TJ" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section">
+    <div class="container">
+      <div class="section-heading"><h2>Recent Posts</h2><a href="/blog/">All posts →</a></div>
+      <div class="post-list">
+        {posts.map((post) => <PostCard title={post.data.title} description={post.data.description} date={post.data.date} tags={post.data.tags} body={post.body} href={`/blog/${post.id}/`} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section">
+    <div class="container">
+      <div class="section-heading"><h2>Latest Notes</h2><a href="/notes/">All notes →</a></div>
+      <div class="post-list">
+        {notes.map((note) => <PostCard title={note.data.title} description={note.data.description} date={note.data.date} tags={note.data.tags} body={note.body} category={note.data.category} kind="Note" href={`/notes/${note.id}/`} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section">
+    <div class="container">
+      <div class="section-heading"><h2>Featured Projects</h2><a href="/projects/">All projects →</a></div>
+      <div class="project-grid">
+        {projects.map((project) => <ProjectCard title={project.data.title} description={project.data.description} tech={project.data.tech} status={project.data.status} github={project.data.github} documentation={project.data.documentation} href={`/projects/${project.id}/`} />)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

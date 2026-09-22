@@ -193,6 +193,47 @@
       });
     }
 
+    const COPY_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+    const CHECK_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>';
+
+    function addCodeCopyButtons(container) {
+      container.querySelectorAll("pre").forEach((pre) => {
+        const code = pre.querySelector("code");
+        if (!code || pre.querySelector(".code-copy")) return;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "code-copy";
+        btn.setAttribute("aria-label", "复制代码");
+        btn.innerHTML = COPY_ICON + "<span>复制</span>";
+        btn.addEventListener("click", async () => {
+          const text = code.innerText;
+          try {
+            if (navigator.clipboard?.writeText) {
+              await navigator.clipboard.writeText(text);
+            } else {
+              const ta = document.createElement("textarea");
+              ta.value = text;
+              ta.style.position = "fixed";
+              ta.style.opacity = "0";
+              document.body.appendChild(ta);
+              ta.select();
+              document.execCommand("copy");
+              document.body.removeChild(ta);
+            }
+            btn.classList.add("copied");
+            btn.innerHTML = CHECK_ICON + "<span>已复制</span>";
+            setTimeout(() => {
+              btn.classList.remove("copied");
+              btn.innerHTML = COPY_ICON + "<span>复制</span>";
+            }, 1600);
+          } catch (err) {
+            btn.innerHTML = COPY_ICON + "<span>失败</span>";
+          }
+        });
+        pre.appendChild(btn);
+      });
+    }
+
     function slugify(text) {
       return text.toLowerCase().replace(/[^\w\u4e00-\u9fff]+/g, "-").replace(/^-|-$/g, "");
     }
@@ -288,6 +329,7 @@
         md.innerHTML = marked.parse(text);
         document.querySelectorAll("pre code").forEach((block) => hljs.highlightElement(block));
         addHeadingIds(md);
+        addCodeCopyButtons(md);
 
         if (study) {
           await loadMathJax();

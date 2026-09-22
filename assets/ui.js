@@ -5,6 +5,76 @@ function $$(sel, root = document) {
   return Array.from(root.querySelectorAll(sel));
 }
 
+const BACKGROUND_SETS = {
+  landscape: [
+    "../images/image1.jpg",
+    "../images/image2.jpg",
+    "../images/image3.jpg",
+    "../images/image4.jpg",
+    "../images/122535213_p0-万事屋すいちゃん.jpg",
+    "../images/65913057_p0-水着オルタ.png",
+    "../images/122149864_p0-とげなしとげあり.jpg",
+    "../images/120064238_p0-GIRLS BAND CRY完结贺图.png",
+    "../images/126475690_p0-No longer alone.jpg",
+    "../images/57963734_p0-魔女と聖女.png",
+  ],
+  portrait: [
+    "../images/119121286_p0-ガールズバンドクライ.jpg",
+    "../images/145762384_p0-冬.jpg",
+    "../images/119051947_p0-全部ぶちこめ！.png",
+    "../images/59612057_p0-Avalon.png",
+  ],
+};
+
+// Backward-compatible flat list (defaults to landscape).
+const BACKGROUND_IMAGES = BACKGROUND_SETS.landscape;
+
+export function isPortraitViewport(win = globalThis) {
+  return !!(win && win.matchMedia && win.matchMedia("(orientation: portrait)").matches);
+}
+
+export function selectBackgroundSet(portrait, sets = BACKGROUND_SETS) {
+  const list = portrait ? sets.portrait : sets.landscape;
+  if (list && list.length) return list;
+  return sets.landscape && sets.landscape.length ? sets.landscape : sets.portrait || [];
+}
+
+export function chooseRandomBackgroundImage(images = BACKGROUND_IMAGES, random = Math.random) {
+  if (!images.length) return "";
+  const raw = random();
+  const clamped = Math.max(0, Math.min(raw, 0.999999999));
+  return images[Math.floor(clamped * images.length)];
+}
+
+export function buildCssImageUrl(imagePath, baseUrl = import.meta.url) {
+  return `url("${new URL(imagePath, baseUrl).href}")`;
+}
+
+export function initRandomBackground({
+  doc = globalThis.document,
+  win = globalThis,
+  images,
+  sets = BACKGROUND_SETS,
+  portrait,
+  random = Math.random,
+  baseUrl = import.meta.url,
+} = {}) {
+  const isPortrait = typeof portrait === "boolean" ? portrait : isPortraitViewport(win);
+  const list = Array.isArray(images) ? images : selectBackgroundSet(isPortrait, sets);
+  const imagePath = chooseRandomBackgroundImage(list, random);
+  if (!imagePath || !doc?.documentElement?.style?.setProperty) return;
+  doc.documentElement.style.setProperty("--bg-image", buildCssImageUrl(imagePath, baseUrl));
+}
+
+export function initResponsiveBackground({ win = globalThis } = {}) {
+  initRandomBackground();
+  if (!win.matchMedia) return;
+  const mq = win.matchMedia("(orientation: portrait)");
+  const onChange = () => initRandomBackground();
+  if (mq.addEventListener) mq.addEventListener("change", onChange);
+  else if (mq.addListener) mq.addListener(onChange);
+}
+
 const prefersReducedMotion = () =>
   window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -174,6 +244,7 @@ export function initReveal() {
 
 export function initSidebarUI() {
   initThemeOnLoad();
+  initResponsiveBackground();
   initThemeToggle();
   initGroups();
   initActiveLink();

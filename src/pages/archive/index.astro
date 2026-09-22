@@ -1,0 +1,20 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { byNewest, formatDate, isPublished } from '../../utils/content';
+const posts = byNewest((await getCollection('blog')).filter(isPublished));
+const groups = posts.reduce<Record<string, typeof posts>>((result, post) => {
+  const year = String(post.data.date.getFullYear());
+  (result[year] ??= []).push(post);
+  return result;
+}, {});
+---
+<BaseLayout title="Archive" description="按年份浏览全部技术博客文章。">
+  <div class="container page">
+    <header class="page-header"><span class="eyebrow">All writing</span><h1>Archive</h1><p>按时间浏览全部正式技术文章。</p></header>
+    {Object.entries(groups).sort(([a], [b]) => Number(b) - Number(a)).map(([year, entries]) => <section>
+      <h2 class="archive-year">{year}</h2>
+      <ul class="archive-list">{entries.map((entry) => <li><time datetime={entry.data.date.toISOString()}>{formatDate(entry.data.date)}</time><a href={`/blog/${entry.id}/`}>{entry.data.title}</a><span>{entry.data.tags[0]}</span></li>)}</ul>
+    </section>)}
+  </div>
+</BaseLayout>
