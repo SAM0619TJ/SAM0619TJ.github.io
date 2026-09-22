@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Search from '../components/Search.astro';
+---
+<BaseLayout title="Search" description="搜索博客文章、技术笔记与项目。">
+  <div class="container page">
+    <header class="page-header"><span class="eyebrow">Local full-text index</span><h1>Search</h1><p>搜索 Blog、Notes 和 Projects。索引由 Pagefind 在构建阶段生成，不依赖外部服务。</p></header>
+    <Search />
+  </div>
+</BaseLayout>

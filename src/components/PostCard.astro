@@ -1,0 +1,30 @@
+---
+import { formatDate, readingTime, slugifyTag } from '../utils/content';
+
+interface Props {
+  title: string;
+  description: string;
+  date?: Date;
+  tags: string[];
+  href: string;
+  body?: string;
+  kind?: 'Blog' | 'Note';
+  category?: string;
+}
+
+const { title, description, date, tags, href, body = '', kind = 'Blog', category } = Astro.props;
+---
+
+<article class="post-card" data-pagefind-meta={`type:${kind}`}>
+  <div class="post-card-meta">
+    <span class="eyebrow">{category ?? kind}</span>
+    <span aria-hidden="true">·</span>
+    {date && <><time datetime={date.toISOString()}>{formatDate(date)}</time><span aria-hidden="true">·</span></>}
+    <span>{readingTime(body)} min read</span>
+  </div>
+  <h2><a href={href}>{title}</a></h2>
+  <p>{description}</p>
+  <div class="tag-list" aria-label="标签">
+    {tags.map((tag) => <a class="tag" href={`/tags/${slugifyTag(tag)}/`}>#{tag}</a>)}
+  </div>
+</article>

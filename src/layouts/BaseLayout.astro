@@ -1,0 +1,89 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+import 'katex/dist/katex.min.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+}
+
+const {
+  title = 'Miyako — Robotics & Computer Vision',
+  description = '机器人、计算机视觉、嵌入式系统与工程实践的技术文章、学习笔记和项目。',
+  image = '/images/og-default.svg',
+  type = 'website',
+  noindex = false,
+} = Astro.props;
+const pageTitle = title.includes('Miyako') ? title : `${title} | Miyako`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(image, Astro.site);
+---
+
+<!doctype html>
+<html lang="zh-CN" data-theme="system">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f7f8fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)" />
+    {noindex && <meta name="robots" content="noindex,nofollow" />}
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" type="application/rss+xml" title="Miyako Blog" href="/rss.xml" />
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:site_name" content="Miyako" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <title>{pageTitle}</title>
+    <script is:inline>
+      (() => {
+        const mode = localStorage.getItem('site-theme') || 'system';
+        const dark = mode === 'dark' || (mode === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = mode;
+        document.documentElement.classList.toggle('dark', dark);
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">跳到正文</a>
+    <Header />
+    <main id="main-content" data-pagefind-body>
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      const button = document.querySelector<HTMLButtonElement>('#theme-toggle');
+      const modes = ['system', 'light', 'dark'];
+      const labels: Record<string, string> = { system: '跟随系统', light: '浅色', dark: '深色' };
+      const apply = (mode: string) => {
+        const dark = mode === 'dark' || (mode === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = mode;
+        document.documentElement.classList.toggle('dark', dark);
+        if (button) button.setAttribute('aria-label', `主题：${labels[mode]}`);
+      };
+      apply(localStorage.getItem('site-theme') || 'system');
+      button?.addEventListener('click', () => {
+        const current = localStorage.getItem('site-theme') || 'system';
+        const next = modes[(modes.indexOf(current) + 1) % modes.length];
+        localStorage.setItem('site-theme', next);
+        apply(next);
+      });
+      matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+        if ((localStorage.getItem('site-theme') || 'system') === 'system') apply('system');
+      });
+    </script>
+  </body>
+</html>

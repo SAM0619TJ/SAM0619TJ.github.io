@@ -1,0 +1,66 @@
+<section class="search-panel" data-pagefind-ignore>
+  <label for="search-input">搜索文章、笔记和项目</label>
+  <div class="search-box">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+    <input id="search-input" type="search" placeholder="例如：ROS2、Docker、VINS…" autocomplete="off" />
+    <kbd>/</kbd>
+  </div>
+  <p class="search-status" id="search-status" aria-live="polite">输入关键词开始搜索。</p>
+  <ol class="search-results" id="search-results"></ol>
+</section>
+
+<script>
+  const input = document.querySelector<HTMLInputElement>('#search-input');
+  const status = document.querySelector<HTMLElement>('#search-status');
+  const results = document.querySelector<HTMLOListElement>('#search-results');
+  let pagefind: any;
+  let timer: number;
+
+  const escapeHtml = (value: string) => value.replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char] ?? char);
+
+  async function loadPagefind() {
+    if (pagefind) return pagefind;
+    const path = `${import.meta.env.BASE_URL}pagefind/pagefind.js`;
+    pagefind = await import(/* @vite-ignore */ path);
+    await pagefind.options({ excerptLength: 24 });
+    return pagefind;
+  }
+
+  async function search(query: string) {
+    if (!status || !results) return;
+    if (!query.trim()) {
+      status.textContent = '输入关键词开始搜索。';
+      results.innerHTML = '';
+      return;
+    }
+    status.textContent = '搜索中…';
+    try {
+      const api = await loadPagefind();
+      const response = await api.search(query);
+      const items = await Promise.all(response.results.slice(0, 20).map((item: any) => item.data()));
+      status.textContent = `找到 ${response.results.length} 个结果`;
+      results.innerHTML = items.map((item: any) => `
+        <li>
+          <a href="${escapeHtml(item.url)}">
+            <span class="result-type">${escapeHtml(item.meta.type ?? 'Page')}</span>
+            <strong>${escapeHtml(item.meta.title ?? 'Untitled')}</strong>
+            <p>${item.excerpt}</p>
+          </a>
+        </li>`).join('');
+    } catch {
+      status.textContent = '开发模式下搜索索引尚未生成，请先运行 npm run build，再运行 npm run preview。';
+      results.innerHTML = '';
+    }
+  }
+
+  input?.addEventListener('input', () => {
+    window.clearTimeout(timer);
+    timer = window.setTimeout(() => search(input.value), 160);
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === '/' && document.activeElement !== input) {
+      event.preventDefault();
+      input?.focus();
+    }
+  });
+</script>

@@ -1,0 +1,23 @@
+---
+interface Heading { depth: number; slug: string; text: string }
+const { headings = [] } = Astro.props as { headings: Heading[] };
+const { variant = 'desktop' } = Astro.props as { headings: Heading[]; variant?: 'mobile' | 'desktop' };
+const visible = headings.filter((heading) => heading.depth >= 2 && heading.depth <= 3);
+---
+
+{visible.length > 0 && (
+  variant === 'mobile' ?
+    <details class="toc-mobile">
+      <summary>On this page</summary>
+      <nav aria-label="文章目录">
+        {visible.map((heading) => <a class={`toc-depth-${heading.depth}`} href={`#${heading.slug}`}>{heading.text}</a>)}
+      </nav>
+    </details>
+  :
+    <aside class="toc-desktop" aria-label="文章目录">
+      <p>On this page</p>
+      <nav>
+        {visible.map((heading) => <a class={`toc-depth-${heading.depth}`} data-toc-link={heading.slug} href={`#${heading.slug}`}>{heading.text}</a>)}
+      </nav>
+    </aside>
+)}

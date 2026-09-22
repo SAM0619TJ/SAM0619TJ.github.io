@@ -1,0 +1,15 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { byNewest, isPublished } from '../../utils/content';
+const projects = byNewest((await getCollection('projects')).filter(isPublished));
+---
+<BaseLayout title="Projects" description="机器人视觉、嵌入式、边缘 AI 与自主系统工程项目。">
+  <div class="container page">
+    <header class="page-header"><span class="eyebrow">Selected work</span><h1>Projects</h1><p>真实工程问题、系统权衡与实现结果。每个项目都链接到代码或进一步文档。</p></header>
+    <div class="project-grid">
+      {projects.map((project) => <ProjectCard title={project.data.title} description={project.data.description} tech={project.data.tech} status={project.data.status} github={project.data.github} documentation={project.data.documentation} href={`/projects/${project.id}/`} />)}
+    </div>
+  </div>
+</BaseLayout>

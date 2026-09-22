@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="About" description="Miyako 的开发者档案：机器人、计算机视觉、嵌入式系统与边缘 AI。">
+  <div class="container page">
+    <header class="page-header"><span class="eyebrow">Developer profile</span><h1>About</h1><p>关注能在真实硬件上稳定运行的感知、定位与控制系统。</p></header>
+    <div class="about-grid">
+      <section class="about-copy">
+        <p>我是 Miyako，一名对机器人视觉、实时图形与嵌入式开发感兴趣的工程实践者。这个网站用于沉淀可复用的技术知识，而不是展示一份传统简历。</p>
+        <h2>方向</h2>
+        <p>主要研究和实践方向包括视觉惯性里程计、SLAM、无人机自主导航、边缘 AI 推理、ROS2 系统集成，以及资源受限平台上的性能优化。</p>
+        <h2>工作方式</h2>
+        <p>偏好先建立可测量的最小系统，再通过日志、性能数据与自动化测试逐步扩展。文章会尽量记录失败路径、配置细节和可复现条件。</p>
+        <h2>项目经历</h2>
+        <p>当前公开项目包括迷你光栅化渲染器与 RoboMaster 视觉系统；更多工程资料会逐步整理到 Projects 与 Blog。</p>
+        <div class="button-row"><a class="button primary" href="/projects/">Explore projects</a><a class="button" href="https://github.com/SAM0619TJ" target="_blank" rel="noopener noreferrer">GitHub ↗</a></div>
+      </section>
+      <aside class="profile-card" aria-label="技术档案">
+        <dl>
+          <div><dt>Focus</dt><dd>Robotics & Vision</dd></div>
+          <div><dt>Languages</dt><dd>C++ · Python · TypeScript</dd></div>
+          <div><dt>Systems</dt><dd>Linux · ROS2 · Docker</dd></div>
+          <div><dt>Hardware</dt><dd>Edge AI · Embedded</dd></div>
+          <div><dt>Contact</dt><dd><a href="https://github.com/SAM0619TJ">GitHub / SAM0619TJ</a></dd></div>
+        </dl>
+      </aside>
+    </div>
+  </div>
+</BaseLayout>

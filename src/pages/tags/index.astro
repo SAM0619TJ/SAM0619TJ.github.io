@@ -1,0 +1,20 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { isPublished, slugifyTag } from '../../utils/content';
+import { legacyMetadata } from '../../utils/legacy';
+const posts = (await getCollection('blog')).filter(isPublished);
+const notes = (await getCollection('notes')).filter(isPublished);
+const legacyTags = (await getCollection('legacy')).flatMap((entry) => legacyMetadata(entry).tags);
+const counts = [...posts, ...notes].flatMap((entry) => entry.data.tags).concat(legacyTags).reduce<Record<string, number>>((result, tag) => {
+  result[tag] = (result[tag] ?? 0) + 1;
+  return result;
+}, {});
+const tags = Object.entries(counts).sort((a, b) => a[0].localeCompare(b[0]));
+---
+<BaseLayout title="Tags" description="按技术标签浏览博客文章和学习笔记。">
+  <div class="container page">
+    <header class="page-header"><span class="eyebrow">Topics</span><h1>Tags</h1><p>跨 Blog 与 Notes 浏览相关主题。</p></header>
+    <div class="tag-cloud">{tags.map(([tag, count]) => <a href={`/tags/${slugifyTag(tag)}/`}>#{tag} <span>{count}</span></a>)}</div>
+  </div>
+</BaseLayout>

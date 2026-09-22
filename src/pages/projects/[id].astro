@@ -1,0 +1,15 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection, render } from 'astro:content';
+import PostLayout from '../../layouts/PostLayout.astro';
+import { isPublished } from '../../utils/content';
+export const getStaticPaths = (async () => {
+  const projects = (await getCollection('projects')).filter(isPublished);
+  return projects.map((project) => ({ params: { id: project.id }, props: { project } }));
+}) satisfies GetStaticPaths;
+const { project } = Astro.props;
+const { Content, headings } = await render(project);
+---
+<PostLayout title={project.data.title} description={project.data.description} date={project.data.date} tags={project.data.tech} linkTags={false} body={project.body} headings={headings} eyebrow={`Project · ${project.data.status}`} backHref="/projects/" backLabel="Back to Projects">
+  <Content />
+</PostLayout>
