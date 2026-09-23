@@ -151,11 +151,10 @@ SAM0619TJ.github.io
 
 部署步骤：
 
-1. 将仓库命名为 `SAM0619TJ.github.io`（当前远程仓库名是 `blog_prime`）。仓库改名后，`SAM0619TJ.github.io` 与 `/blog_prime/` 都没有历史站点，不需要做重定向。
-2. 同步本地远端地址：
+1. 仓库已命名为 `SAM0619TJ.github.io`，符合 GitHub Pages 用户主页仓库的命名规则。
+2. 本地 `origin` 已同步到用户主页仓库。可用下面的命令复核：
 
 ```bash
-git remote set-url origin https://github.com/SAM0619TJ/SAM0619TJ.github.io.git
 git remote -v
 ```
 

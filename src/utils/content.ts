@@ -19,7 +19,7 @@ export function formatDate(date: Date) {
 }
 
 export function isPublished<T extends CollectionEntry<'blog'> | CollectionEntry<'notes'> | CollectionEntry<'projects'>>(entry: T) {
-  return import.meta.env.PROD ? !entry.data.draft : true;
+  return !entry.data.draft;
 }
 
 export function slugifyTag(tag: string) {
